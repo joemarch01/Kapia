@@ -1,6 +1,10 @@
+import Board.Board;
+import Game.Game;
+import Player.LocalHumanPlayer;
 
 public class Client {
     public static void main (String[] args) {
-        System.out.println("Hello World");
+        Game g = new Game(new LocalHumanPlayer("Jim", true), new LocalHumanPlayer("Robert", false));
+        g.play();
     }
 }

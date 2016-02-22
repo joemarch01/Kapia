@@ -1,7 +1,16 @@
 package Player;
 
-/**
- * Created by jm360 on 22/02/16.
- */
+
+import Event.Event;
+
 public abstract class Player {
+    String tag;
+    boolean isWhite;
+
+    public Player (String tag, boolean isWhite) {
+        this.tag = tag;
+        this.isWhite = isWhite;
+    }
+
+    public abstract Event fetchNextEvent ();
 }
