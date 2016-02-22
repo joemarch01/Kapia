@@ -22,6 +22,8 @@ public class LocalHumanPlayer extends Player {
             return new Quit();
         } else if (commandArgs[0].equals("message")) {
             return new Message(commandArgs[1]);
+        } else if (commandArgs[0].equals("clear")) {
+            return new Clear(Integer.valueOf(commandArgs[1]), isWhite);
         }
         return new Event();
     }

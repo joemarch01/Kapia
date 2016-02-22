@@ -12,5 +12,9 @@ public abstract class Player {
         this.isWhite = isWhite;
     }
 
+    public String getTag () {
+        return tag;
+    }
+
     public abstract Event fetchNextEvent ();
 }

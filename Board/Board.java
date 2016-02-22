@@ -2,18 +2,25 @@ package Board;
 
 import java.util.Stack;
 import Event.*;
+import Game.Dice;
 
-/**
- * Created by jm360 on 22/02/16.
- */
 public class Board {
     
     public static final int SIZE = 24;
-    
+    public static final int NUMBER_OF_PIECES = 15;
+
+    public int numberOfWhitePieces;
+    public int numberOfBlackPieces;
     Stack<Piece> [] board;
+    Stack<WhitePiece> whiteBar;
+    Stack<BlackPiece> blackBar;
 
     public Board () {
         board =  (Stack<Piece>[]) new Stack [SIZE];
+        whiteBar = new Stack<WhitePiece>();
+        blackBar = new Stack<BlackPiece>();
+        numberOfBlackPieces = NUMBER_OF_PIECES;
+        numberOfWhitePieces = NUMBER_OF_PIECES;
 
         for (int i = 0; i < board.length; i ++) {
             board[i] = new Stack<Piece>();
@@ -64,12 +71,148 @@ public class Board {
         }
     }
 
-    public boolean isMoveLegal (Move move, int dice1, int dice2) {
-        return
+    public boolean isMoveLegal (Move move, Dice dice) {
+        if (move.getFrom() >= SIZE || move.getFrom() < 0 || move.getTo() >= SIZE || move.getTo() < 0) {
+            return false;
+        }
+
+        if (Math.abs(move.getFrom() - move.getTo()) != dice.getValue()) {
+            return false;
+        }  else if (!move.getWhite() && move.getTo() - move.getFrom() < 0) {
+            return false;
+        } else if (move.getWhite() && move.getTo() - move.getFrom() > 0) {
+            return false;
+        } else if (board[move.getFrom()].size() == 0) {
+            return false;
+        } else if (board[move.getTo()].size() > 1 && board[move.getTo()].peek().getClass() != board[move.getFrom()].peek().getClass()) {
+            return false;
+        }
+        return true;
     }
 
-    public boolean move (Move move) {
-        board[move.getTo()].add(board[move.getFrom()].pop());
+    public boolean isMoveLegal (Move move, Dice dice1, Dice dice2) {
+
+        if (dice1.used() && dice2.used()) {
+            return false;
+        } else if (dice2.used()) {
+            return isMoveLegal(move, dice1);
+        } else if (dice1.used()) {
+            return isMoveLegal(move, dice2);
+        } else {
+            Dice dice3 = new Dice();
+            dice3.setValue(dice1.getValue() + dice2.getValue());
+            return isMoveLegal(move, dice1) || isMoveLegal(move, dice2) || isMoveLegal(move, dice3);
+        }
+    }
+
+    public boolean move (Move move, Dice dice1, Dice dice2) {
+
+        if (!isMoveLegal(move, dice1, dice2)) {
+            return false;
+        }
+
+        if (Math.abs(move.getFrom() - move.getTo()) == dice1.getValue()) {
+            dice1.setUsed(true);
+        } else if (Math.abs(move.getFrom() - move.getTo()) == dice2.getValue())  {
+            dice2.setUsed(true);
+        } else {
+            dice1.setUsed(true);
+            dice2.setUsed(true);
+        }
+
+        if (board[move.getTo()].isEmpty() || board[move.getTo()].peek().getClass() == board[move.getFrom()].peek().getClass()) {
+            board[move.getTo()].add(board[move.getFrom()].pop());
+        } else {
+            if (move.getWhite()) {
+                blackBar.push((BlackPiece)board[move.getTo()].pop());
+            } else {
+                whiteBar.push((WhitePiece)board[move.getTo()].pop());
+            }
+            board[move.getTo()].add(board[move.getFrom()].pop());
+        }
+
         return true;
+    }
+
+    private boolean isClearLegal (Clear clear, Dice dice) {
+
+        int total = 0;
+        if (clear.white()) {
+
+            if (clear.getFrom() > 5 || clear.getFrom() < 0 || clear.getFrom() >= SIZE) {
+                return false;
+            }
+
+            for (int i = 0; i < 6; i ++) {
+                if (!board[i].empty() && board[i].peek() instanceof WhitePiece) {
+                    total += board[i].size();
+                }
+            }
+
+            if (total != numberOfWhitePieces) {
+                return false;
+            }
+
+        } else {
+
+            if (clear.getFrom() < SIZE - 6 || clear.getFrom() < 0 || clear.getFrom() >= SIZE) {
+                return false;
+            }
+
+            for (int i = SIZE - 6; i < SIZE; i ++) {
+                if (!board[i].empty() && board[i].peek() instanceof BlackPiece) {
+                    total += board[i].size();
+                }
+            }
+
+            if (total != numberOfBlackPieces) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isClearLegal (Clear clear, Dice dice1, Dice dice2) {
+        if (dice1.used() && dice2.used()) {
+            return false;
+        } else if (dice2.used()) {
+            return isClearLegal(clear, dice1);
+        } else if (dice1.used()) {
+            return isClearLegal(clear, dice2);
+        } else {
+            return isClearLegal(clear, dice1) || isClearLegal(clear, dice2);
+        }
+    }
+
+    public boolean clear (Clear clear, Dice dice1, Dice dice2) {
+
+        if (!isClearLegal(clear, dice1, dice2)) {
+            return false;
+        }
+
+        board[clear.getFrom()].pop();
+
+        if (clear.white()) {
+            if (clear.getFrom() == dice1.getValue() - 1) {
+                dice1.setUsed(true);
+            } else {
+                dice2.setUsed(true);
+            }
+            numberOfWhitePieces --;
+        } else {
+            if (SIZE - clear.getFrom() == dice1.getValue()) {
+                dice1.setUsed(true);
+            } else {
+                dice2.setUsed(true);
+            }
+            numberOfBlackPieces --;
+        }
+
+        return true;
+    }
+
+    public boolean isGameWon () {
+        return (numberOfBlackPieces == 0) || (numberOfWhitePieces == 0);
     }
 }

@@ -3,14 +3,18 @@ import Board.*;
 import Player.*;
 import Event.*;
 
+import java.util.Random;
 import java.util.Stack;
 
 public class Game {
     Board board;
     Player player1;
     Player player2;
+    Player currentPlayer;
     Stack<Event> eventStack;
     boolean finished;
+    Dice dice1;
+    Dice dice2;
 
     public Game (Player player1, Player player2) {
         this.player1 = player1;
@@ -18,6 +22,8 @@ public class Game {
         board = new Board();
         eventStack = new Stack<Event>();
         this.finished = false;
+        dice1 = new Dice();
+        dice2 = new Dice();
     }
 
     public void displayBoardCommandLine () {
@@ -74,23 +80,58 @@ public class Game {
 
     private void handleEvent (Event event) {
         if (event instanceof Move) {
-            board.move((Move)event);
+            if (board.move((Move)event, dice1, dice2)) {
+                displayBoardCommandLine();
+            }
         } else if (event instanceof Quit) {
             finished = true;
         } else if (event instanceof Message) {
             System.out.println(((Message) event).getMessage());
+        } else if (event instanceof Clear) {
+            if (board.clear((Clear)event, dice1, dice2)) {
+                displayBoardCommandLine();
+            }
         }
+    }
+
+    private void rollDice () {
+        dice1.roll();
+        dice2.roll();
     }
 
     public void play () {
         while (!finished) {
             displayBoardCommandLine();
-            Event event = player1.fetchNextEvent();
-            while (!(event instanceof Move || event instanceof Quit)) {
-                handleEvent(event);
+            rollDice();
+            System.out.println(dice1.getValue() + " : " + dice2.getValue());
+            System.out.println(player1.getTag() + "'s move");
+            currentPlayer = player1;
+            Event event = new Event();
+
+            while (!(dice1.used() && dice2.used()) && !(event instanceof Quit)) {
                 event = player1.fetchNextEvent();
+                handleEvent(event);
             }
             handleEvent(event);
+
+            if (finished) {
+                break;
+            }
+
+            displayBoardCommandLine();
+
+            rollDice();
+            System.out.println(dice1.getValue() + " : " + dice2.getValue());
+            System.out.println(player2.getTag() + "'s move");
+            currentPlayer = player2;
+            event = player2.fetchNextEvent();
+
+            while (!(dice1.used() && dice2.used()) && !(event instanceof Quit)) {
+                event = player2.fetchNextEvent();
+                handleEvent(event);
+            }
+            handleEvent(event);
+
         }
     }
 }
