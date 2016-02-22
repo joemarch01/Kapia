@@ -72,13 +72,12 @@ public class Board {
     }
 
     public boolean isMoveLegal (Move move, Dice dice) {
-        if (move.getFrom() >= SIZE || move.getFrom() < 0 || move.getTo() >= SIZE || move.getTo() < 0) {
-            return false;
-        }
 
         if (Math.abs(move.getFrom() - move.getTo()) != dice.getValue()) {
             return false;
-        }  else if (!move.getWhite() && move.getTo() - move.getFrom() < 0) {
+        } else if (move.getFrom() >= SIZE || move.getFrom() < 0 || move.getTo() >= SIZE || move.getTo() < 0) {
+            return false;
+        } else if (!move.getWhite() && move.getTo() - move.getFrom() < 0) {
             return false;
         } else if (move.getWhite() && move.getTo() - move.getFrom() > 0) {
             return false;
@@ -91,6 +90,12 @@ public class Board {
     }
 
     public boolean isMoveLegal (Move move, Dice dice1, Dice dice2) {
+
+        if (move.getWhite() && !whiteBar.empty()) {
+            return false;
+        } else if (!move.getWhite() && !blackBar.empty()) {
+            return false;
+        }
 
         if (dice1.used() && dice2.used()) {
             return false;
@@ -174,6 +179,13 @@ public class Board {
     }
 
     private boolean isClearLegal (Clear clear, Dice dice1, Dice dice2) {
+
+        if (clear.white() && !whiteBar.empty()) {
+            return false;
+        } else if (!clear.white() && !blackBar.empty()) {
+            return false;
+        }
+
         if (dice1.used() && dice2.used()) {
             return false;
         } else if (dice2.used()) {
@@ -209,6 +221,55 @@ public class Board {
             numberOfBlackPieces --;
         }
 
+        return true;
+    }
+
+    public boolean isReviveLegal (Revive revive, Dice dice1, Dice dice2) {
+
+        if (revive.getTo() < 0 || revive.getTo() >= SIZE) {
+            return false;
+        }
+
+        if (revive.getWhite()) {
+            if (whiteBar.empty()) {
+                return false;
+            } else if (board[revive.getTo()].size() > 1 && board[revive.getTo()].peek() instanceof BlackPiece) {
+                return false;
+            } else if (revive.getTo() < SIZE - 6) {
+                return false;
+            }
+        } else {
+            if (blackBar.empty()) {
+                return false;
+            } else if (board[revive.getTo()].size() > 1 && board[revive.getTo()].peek() instanceof WhitePiece) {
+                return false;
+            } else if (revive.getTo() > 5) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean revive (Revive revive, Dice dice1, Dice dice2) {
+        if (!isReviveLegal(revive, dice1, dice2)) {
+            return false;
+        }
+
+        if (revive.getWhite()) {
+            if (board[revive.getTo()].size() > 0 && board[revive.getTo()].peek() instanceof BlackPiece) {
+                blackBar.push((BlackPiece)board[revive.getTo()].pop());
+                board[revive.getTo()].push(whiteBar.pop());
+            } else {
+                board[revive.getTo()].push(whiteBar.pop());
+            }
+        } else {
+            if (board[revive.getTo()].size() > 0 && board[revive.getTo()].peek() instanceof WhitePiece) {
+                whiteBar.push((WhitePiece)board[revive.getTo()].pop());
+                board[revive.getTo()].push(blackBar.pop());
+            } else {
+                board[revive.getTo()].push(blackBar.pop());
+            }
+        }
         return true;
     }
 

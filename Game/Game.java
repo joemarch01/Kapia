@@ -91,6 +91,10 @@ public class Game {
             if (board.clear((Clear)event, dice1, dice2)) {
                 displayBoardCommandLine();
             }
+        } else if (event instanceof Revive) {
+            if (board.revive((Revive)event, dice1, dice2)) {
+                displayBoardCommandLine();
+            }
         }
     }
 
