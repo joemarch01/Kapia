@@ -154,7 +154,7 @@ public class Game {
         while (!finished) {
             displayBoardCommandLine();
             System.out.println(dice1.getValue() + " : " + dice2.getValue());
-            System.out.println(player1.getTag() + "'s move");
+            System.out.println(player1.getTag() + "(white)'s move");
             currentPlayer = player1;
             Event event = new Event();
 
@@ -172,7 +172,7 @@ public class Game {
 
             rollDice();
             System.out.println(dice1.getValue() + " : " + dice2.getValue());
-            System.out.println(player2.getTag() + "'s move");
+            System.out.println(player2.getTag() + "(black)'s move");
             currentPlayer = player2;
 
             while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !(event instanceof Quit)) {
