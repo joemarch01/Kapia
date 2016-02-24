@@ -112,7 +112,7 @@ public class Game {
                 displayBoardCommandLine();
             }
         } else if (event instanceof Revive) {
-            if (board.revive((Revive)event, dice1, dice2)) {
+            if (board.revive((Revive)event, dice1, dice2, dice3, dice4)) {
                 displayBoardCommandLine();
             }
         }
@@ -158,7 +158,7 @@ public class Game {
             currentPlayer = player1;
             Event event = new Event();
 
-            while (!(dice1.used() && dice2.used()) && !(event instanceof Quit)) {
+            while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !(event instanceof Quit)) {
                 event = player1.fetchNextEvent();
                 handleEvent(event);
             }
@@ -174,9 +174,8 @@ public class Game {
             System.out.println(dice1.getValue() + " : " + dice2.getValue());
             System.out.println(player2.getTag() + "'s move");
             currentPlayer = player2;
-            event = player2.fetchNextEvent();
 
-            while (!(dice1.used() && dice2.used()) && !(event instanceof Quit)) {
+            while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !(event instanceof Quit)) {
                 event = player2.fetchNextEvent();
                 handleEvent(event);
             }
