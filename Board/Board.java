@@ -73,6 +73,10 @@ public class Board {
 
     public boolean isMoveLegal (Move move, Dice dice) {
 
+        if (dice.used()) {
+            return false;
+        }
+
         if (Math.abs(move.getFrom() - move.getTo()) != dice.getValue()) {
             return false;
         } else if (move.getFrom() >= SIZE || move.getFrom() < 0 || move.getTo() >= SIZE || move.getTo() < 0) {
@@ -89,7 +93,7 @@ public class Board {
         return true;
     }
 
-    public boolean isMoveLegal (Move move, Dice dice1, Dice dice2) {
+    public boolean isMoveLegal (Move move, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
 
         if (move.getWhite() && !whiteBar.empty()) {
             return false;
@@ -97,22 +101,12 @@ public class Board {
             return false;
         }
 
-        if (dice1.used() && dice2.used()) {
-            return false;
-        } else if (dice2.used()) {
-            return isMoveLegal(move, dice1);
-        } else if (dice1.used()) {
-            return isMoveLegal(move, dice2);
-        } else {
-            Dice dice3 = new Dice();
-            dice3.setValue(dice1.getValue() + dice2.getValue());
-            return isMoveLegal(move, dice1) || isMoveLegal(move, dice2) || isMoveLegal(move, dice3);
-        }
+        return isMoveLegal(move, dice1) || isMoveLegal(move, dice2) || isMoveLegal(move, dice3) || isMoveLegal(move, dice4);
     }
 
-    public boolean move (Move move, Dice dice1, Dice dice2) {
+    public boolean move (Move move, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
 
-        if (!isMoveLegal(move, dice1, dice2)) {
+        if (!isMoveLegal(move, dice1, dice2, dice3, dice4)) {
             return false;
         }
 

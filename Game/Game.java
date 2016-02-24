@@ -15,6 +15,8 @@ public class Game {
     boolean finished;
     Dice dice1;
     Dice dice2;
+    Dice dice3;
+    Dice dice4;
 
     public Game (Player player1, Player player2) {
         this.player1 = player1;
@@ -24,6 +26,10 @@ public class Game {
         this.finished = false;
         dice1 = new Dice();
         dice2 = new Dice();
+        dice3 = new Dice();
+        dice4 = new Dice();
+        dice3.setUsed(true);
+        dice4.setUsed(true);
     }
 
     public void displayBoardCommandLine () {
@@ -101,9 +107,32 @@ public class Game {
     private void rollDice () {
         dice1.roll();
         dice2.roll();
+        if(dice1.getValue() == dice2.getValue()){
+            dice3.setUsed(false);
+            dice4.setUsed(false);
+            dice3.setValue(dice1.getValue());
+            dice4.setValue(dice1.getValue());
+        }
     }
 
     public void play () {
+        do{
+            System.out.print(player1.getTag() + " rolls: ");
+            dice1.roll();
+            System.out.print(dice1.getValue());
+
+            System.out.print(player2.getTag() + " rolls: ");
+            dice2.roll();
+            System.out.print(dice2.getValue());
+
+            if(dice2.getValue() > dice1.getValue()) {
+                Player temp = player1;
+                player1 = player2;
+                player2 = temp;
+                System.out.println(player2.getTag() + " to start");
+            }
+            }while(dice1.getValue() == dice2.getValue());
+
         while (!finished) {
             displayBoardCommandLine();
             rollDice();
