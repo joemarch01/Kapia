@@ -82,11 +82,25 @@ public class Game {
 
             System.out.println();
         }
+        if(dice1.used() == false){
+            System.out.println( "Move: " + dice1.getValue());
+        }
+        if(dice2.used() == false){
+            System.out.println( "Move: " + dice2.getValue());
+        }
+        if(dice3.used() == false){
+            System.out.println( "Move: " + dice3.getValue());
+        }
+        if(dice4.used() == false){
+            System.out.println( "Move: " + dice4.getValue());
+        }
+
+
     }
 
     private void handleEvent (Event event) {
         if (event instanceof Move) {
-            if (board.move((Move)event, dice1, dice2)) {
+            if (board.move((Move)event, dice1, dice2, dice3, dice4)) {
                 displayBoardCommandLine();
             }
         } else if (event instanceof Quit) {
@@ -119,23 +133,26 @@ public class Game {
         do{
             System.out.print(player1.getTag() + " rolls: ");
             dice1.roll();
-            System.out.print(dice1.getValue());
+            System.out.print(dice1.getValue() + "\n");
 
             System.out.print(player2.getTag() + " rolls: ");
             dice2.roll();
-            System.out.print(dice2.getValue());
+            System.out.print(dice2.getValue() + "\n");
 
             if(dice2.getValue() > dice1.getValue()) {
-                Player temp = player1;
-                player1 = player2;
-                player2 = temp;
-                System.out.println(player2.getTag() + " to start");
+                Player temp = player2;
+                player2 = new LocalHumanPlayer(player1.getTag(), false);
+                player1 = new LocalHumanPlayer(temp.getTag(), true);
             }
-            }while(dice1.getValue() == dice2.getValue());
+
+
+
+        } while(dice1.getValue() == dice2.getValue());
+
+        System.out.println(player1.getTag() + " to start");
 
         while (!finished) {
             displayBoardCommandLine();
-            rollDice();
             System.out.println(dice1.getValue() + " : " + dice2.getValue());
             System.out.println(player1.getTag() + "'s move");
             currentPlayer = player1;
@@ -165,6 +182,7 @@ public class Game {
             }
             handleEvent(event);
 
+            rollDice();
         }
     }
 }

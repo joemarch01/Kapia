@@ -218,7 +218,7 @@ public class Board {
         return true;
     }
 
-    public boolean isReviveLegal (Revive revive, Dice dice1, Dice dice2) {
+    public boolean isReviveLegal (Revive revive, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
 
         if (revive.getTo() < 0 || revive.getTo() >= SIZE) {
             return false;
@@ -244,8 +244,8 @@ public class Board {
         return true;
     }
 
-    public boolean revive (Revive revive, Dice dice1, Dice dice2) {
-        if (!isReviveLegal(revive, dice1, dice2)) {
+    public boolean revive (Revive revive, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
+        if (!isReviveLegal(revive, dice1, dice2, dice3, dice4)) {
             return false;
         }
 
