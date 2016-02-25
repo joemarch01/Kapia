@@ -1,5 +1,6 @@
 package Board;
 
+import java.util.ArrayList;
 import java.util.Stack;
 import Event.*;
 import Game.Dice;
@@ -29,9 +30,9 @@ public class Board {
         //Initialise the Black Pieces
         board[0].add(new BlackPiece());
         board[0].add(new BlackPiece());
-        board[11].add(new BlackPiece());
-        board[11].add(new BlackPiece());
-        board[11].add(new BlackPiece());
+        board[0].add(new BlackPiece());
+        board[0].add(new BlackPiece());
+        board[0].add(new BlackPiece());
         board[11].add(new BlackPiece());
         board[11].add(new BlackPiece());
         board[17].add(new BlackPiece());
@@ -63,12 +64,27 @@ public class Board {
         return;
     }
 
+    public void setToReviveState () {
+        //
+        whiteBar.push((WhitePiece)board[23].pop());
+        //
+        blackBar.push((BlackPiece)board[0].pop());
+    }
+
     public Stack<Piece> getColumn (int column) {
         if (column >= SIZE) {
             return null;
         } else {
             return board[column];
         }
+    }
+
+    public Stack<WhitePiece> getWhiteBar () {
+        return whiteBar;
+    }
+
+    public Stack<BlackPiece> getBlackBar () {
+        return blackBar;
     }
 
     public boolean isMoveLegal (Move move, Dice dice) {
@@ -219,7 +235,7 @@ public class Board {
         return true;
     }
 
-    private boolean isReviveLegal (Revive revive, Dice dice) {
+    public boolean isReviveLegal (Revive revive, Dice dice) {
         if (dice.used()) {
             return false;
         }
@@ -287,35 +303,35 @@ public class Board {
                 board[revive.getTo()].push(whiteBar.pop());
             }
             if (board[revive.getTo()].size() == 1 && board[revive.getTo()].peek() instanceof WhitePiece) {
-                whiteBar.push((WhitePiece)board[revive.getTo()].pop());
+                whiteBar.push((WhitePiece) board[revive.getTo()].pop());
                 board[revive.getTo()].push(blackBar.pop());
             } else {
                 board[revive.getTo()].push(blackBar.pop());
             }
-
-            if (!revive.getWhite()) {
-                if(revive.getTo() == dice1.getValue() - 1 && !dice1.used()) {
-                    dice1.setUsed(true);
-                } else if(revive.getTo() == dice2.getValue() - 1 && !dice2.used()) {
-                    dice2.setUsed(true);
-                } else if(revive.getTo() == dice3.getValue() - 1 && !dice3.used()) {
-                    dice3.setUsed(true);
-                } else if(revive.getTo() == dice4.getValue() - 1 && !dice4.used()) {
-                    dice4.setUsed(true);
-                }
-            } else {
-                if(revive.getTo() == SIZE - dice1.getValue() && !dice1.used()) {
-                    dice1.setUsed(true);
-                } else if(revive.getTo() == SIZE - dice2.getValue() && !dice2.used()) {
-                    dice2.setUsed(true);
-                } else if(revive.getTo() == SIZE - dice3.getValue() && !dice3.used()) {
-                    dice3.setUsed(true);
-                } else if(revive.getTo() == SIZE - dice4.getValue() && !dice4.used()) {
-                    dice4.setUsed(true);
-                }
-            }
-
         }
+
+        if (!revive.getWhite()) {
+            if(revive.getTo() == dice1.getValue() - 1 && !dice1.used()) {
+                dice1.setUsed(true);
+            } else if(revive.getTo() == dice2.getValue() - 1 && !dice2.used()) {
+                dice2.setUsed(true);
+            } else if(revive.getTo() == dice3.getValue() - 1 && !dice3.used()) {
+                dice3.setUsed(true);
+            } else if(revive.getTo() == dice4.getValue() - 1 && !dice4.used()) {
+                dice4.setUsed(true);
+            }
+        } else {
+            if(revive.getTo() == SIZE - dice1.getValue() && !dice1.used()) {
+                dice1.setUsed(true);
+            } else if(revive.getTo() == SIZE - dice2.getValue() && !dice2.used()) {
+                dice2.setUsed(true);
+            } else if(revive.getTo() == SIZE - dice3.getValue() && !dice3.used()) {
+                dice3.setUsed(true);
+            } else if(revive.getTo() == SIZE - dice4.getValue() && !dice4.used()) {
+                dice4.setUsed(true);
+            }
+        }
+
         return true;
     }
 

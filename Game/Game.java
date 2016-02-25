@@ -79,9 +79,22 @@ public class Game {
             }
 
             System.out.printf(" : " + (Board.SIZE - i - 1));
-
             System.out.println();
+
         }
+
+
+
+        for (WhitePiece _ : board.getWhiteBar()) {
+            System.out.printf("W ");
+        }
+        System.out.println();
+
+        for (BlackPiece _ : board.getBlackBar()) {
+            System.out.printf("B ");
+        }
+        System.out.println();
+
         if(dice1.used() == false){
             System.out.println( "Move: " + dice1.getValue());
         }
@@ -96,6 +109,13 @@ public class Game {
         }
 
 
+    }
+
+    private void useDice () {
+        dice1.setUsed(true);
+        dice2.setUsed(true);
+        dice3.setUsed(true);
+        dice4.setUsed(true);
     }
 
     private void handleEvent (Event event) {
@@ -115,6 +135,8 @@ public class Game {
             if (board.revive((Revive)event, dice1, dice2, dice3, dice4)) {
                 displayBoardCommandLine();
             }
+        } else if (event instanceof Skip) {
+            useDice();
         }
     }
 
@@ -141,8 +163,8 @@ public class Game {
 
             if(dice2.getValue() > dice1.getValue()) {
                 Player temp = player2;
-                player2 = new LocalHumanPlayer(player1.getTag(), false);
-                player1 = new LocalHumanPlayer(temp.getTag(), true);
+                player2 = player1;
+                player1 = temp;
             }
 
 
@@ -157,6 +179,11 @@ public class Game {
             System.out.println(player1.getTag() + "(white)'s move");
             currentPlayer = player1;
             Event event = new Event();
+
+            if (player1 instanceof LocalAIPlayer) {
+                ((LocalAIPlayer) player1).setBoard(board);
+                ((LocalAIPlayer) player1).setDice(dice1, dice2, dice3, dice4);
+            }
 
             while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !(event instanceof Quit)) {
                 event = player1.fetchNextEvent();
@@ -175,6 +202,11 @@ public class Game {
             System.out.println(player2.getTag() + "(black)'s move");
             currentPlayer = player2;
 
+            if (player2 instanceof LocalAIPlayer) {
+                ((LocalAIPlayer) player2).setBoard(board);
+                ((LocalAIPlayer) player2).setDice(dice1, dice2, dice3, dice4);
+            }
+
             while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !(event instanceof Quit)) {
                 event = player2.fetchNextEvent();
                 handleEvent(event);
@@ -183,5 +215,9 @@ public class Game {
 
             rollDice();
         }
+    }
+
+    public void setToReviveState () {
+        board.setToReviveState();
     }
 }

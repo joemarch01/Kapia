@@ -26,6 +26,8 @@ public class LocalHumanPlayer extends Player {
             return new Clear(Integer.valueOf(commandArgs[1]), isWhite);
         } else if (commandArgs[0].equals("revive")) {
             return new Revive(Integer.valueOf(commandArgs[1]), isWhite);
+        } else if (commandArgs[0].equals("skip")) {
+            return new Skip();
         }
         return new Event();
     }
