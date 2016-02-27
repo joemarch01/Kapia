@@ -1,8 +1,5 @@
 package Event;
 
-/**
- * Created by jm360 on 22/02/16.
- */
 public class Clear extends Event {
     private int from;
     private boolean isWhite;

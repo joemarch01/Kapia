@@ -1,5 +1,6 @@
 package Game;
 import Board.*;
+import Graphics.GameWindow;
 import Player.*;
 import Event.*;
 
@@ -17,6 +18,7 @@ public class Game {
     Dice dice2;
     Dice dice3;
     Dice dice4;
+    GameWindow window;
 
     public Game (Player player1, Player player2) {
         this.player1 = player1;
@@ -32,7 +34,17 @@ public class Game {
         dice4.setUsed(true);
     }
 
+    public Board getBoard () {
+        return board;
+    }
+
+    public void setWindow (GameWindow window) {
+        this.window = window;
+    }
+
     public void displayBoardCommandLine () {
+
+
         for (int i = 0; i < Board.SIZE/2; i ++) {
             System.out.printf(i + " : ");
 
@@ -175,6 +187,7 @@ public class Game {
 
         while (!finished) {
             displayBoardCommandLine();
+            window.repaint();
             System.out.println(dice1.getValue() + " : " + dice2.getValue());
             System.out.println(player1.getTag() + "(white)'s move");
             currentPlayer = player1;
@@ -196,6 +209,7 @@ public class Game {
             }
 
             displayBoardCommandLine();
+            window.repaint();
 
             rollDice();
             System.out.println(dice1.getValue() + " : " + dice2.getValue());
