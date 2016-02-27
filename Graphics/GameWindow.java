@@ -2,7 +2,7 @@ package Graphics;
 
 import javax.swing.*;
 
-import Board.Board;
+import Board.*;
 import Game.*;
 
 import java.awt.*;
@@ -24,11 +24,16 @@ public class GameWindow extends JFrame {
         game.setWindow(this);
     }
 
-    public void repaint () {
+    public void paint (Graphics g) {
+        super.paint(g);
         boardPanel.removeAll();
+        getContentPane().removeAll();
+        getContentPane().add(boardPanel);
         for (int i = 0; i < Board.SIZE; i ++) {
             for (int j = 0; j < game.getBoard().getColumn(i).size(); j ++) {
-                boardPanel.add(new WhitePiecePanel(i));
+                if (game.getBoard().getColumn(i).peek() instanceof WhitePiece) {
+                    getContentPane().add(new WhitePiecePanel(i));
+                }
             }
         }
     }
