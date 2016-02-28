@@ -20,13 +20,13 @@ public class GameWindow extends JFrame {
         this.setVisible(true);
         this.setBounds(0, 0, WIDTH, HEIGHT);
         game.setWindow(this);
+        boardPanel = new BoardPanel(new ImageIcon(ResourceManager.getBoardImage()));
+        getContentPane().add(boardPanel);
     }
 
     public void paint (Graphics g) {
         super.paint(g);
-        boardPanel.removeAll();
         getContentPane().removeAll();
-        getContentPane().add(boardPanel);
         for (int i = 0; i < Board.SIZE; i ++) {
             for (int j = 0; j < game.getBoard().getColumn(i).size(); j ++) {
                 if (game.getBoard().getColumn(i).peek() instanceof WhitePiece) {

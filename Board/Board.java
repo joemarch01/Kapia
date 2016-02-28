@@ -5,7 +5,9 @@ import java.util.Stack;
 import Event.*;
 import Game.Dice;
 
-public class Board {
+import javax.swing.*;
+
+public class Board{
     
     public static final int SIZE = 24;
     public static final int NUMBER_OF_PIECES = 15;
