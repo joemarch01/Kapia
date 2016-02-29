@@ -18,23 +18,12 @@ public class GameWindow extends JFrame {
     public GameWindow (Game game) {
         this.game = game;
         this.setVisible(true);
-        this.setBounds(0, 0, WIDTH, HEIGHT);
+        this.setBounds(0, 0, WIDTH, HEIGHT + 100);
         game.setWindow(this);
-        boardPanel = new BoardPanel(new ImageIcon(ResourceManager.getBoardImage()));
+        boardPanel = new BoardPanel(new ImageIcon(ResourceManager.getBoardImage()), game.getBoard());
         getContentPane().add(boardPanel);
     }
 
-    public void paint (Graphics g) {
-        super.paint(g);
-        getContentPane().removeAll();
-        for (int i = 0; i < Board.SIZE; i ++) {
-            for (int j = 0; j < game.getBoard().getColumn(i).size(); j ++) {
-                if (game.getBoard().getColumn(i).peek() instanceof WhitePiece) {
-                    getContentPane().add(new WhitePiecePanel(i));
-                }
-            }
-        }
-    }
 
 
 }

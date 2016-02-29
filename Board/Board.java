@@ -15,13 +15,13 @@ public class Board{
     public int numberOfWhitePieces;
     public int numberOfBlackPieces;
     Stack<Piece> [] board;
-    Stack<WhitePiece> whiteBar;
-    Stack<BlackPiece> blackBar;
+    Stack<Piece> whiteBar;
+    Stack<Piece> blackBar;
 
     public Board () {
         board =  (Stack<Piece>[]) new Stack [SIZE];
-        whiteBar = new Stack<WhitePiece>();
-        blackBar = new Stack<BlackPiece>();
+        whiteBar = new Stack<Piece>();
+        blackBar = new Stack<Piece>();
         numberOfBlackPieces = NUMBER_OF_PIECES;
         numberOfWhitePieces = NUMBER_OF_PIECES;
 
@@ -32,19 +32,19 @@ public class Board{
         //Initialise the Black Pieces
         board[0].add(new BlackPiece());
         board[0].add(new BlackPiece());
-        board[0].add(new BlackPiece());
-        board[0].add(new BlackPiece());
-        board[0].add(new BlackPiece());
         board[11].add(new BlackPiece());
         board[11].add(new BlackPiece());
-        board[17].add(new BlackPiece());
-        board[17].add(new BlackPiece());
-        board[17].add(new BlackPiece());
-        board[17].add(new BlackPiece());
-        board[17].add(new BlackPiece());
-        board[19].add(new BlackPiece());
-        board[19].add(new BlackPiece());
-        board[19].add(new BlackPiece());
+        board[11].add(new BlackPiece());
+        board[11].add(new BlackPiece());
+        board[11].add(new BlackPiece());
+        board[16].add(new BlackPiece());
+        board[16].add(new BlackPiece());
+        board[16].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+        board[18].add(new BlackPiece());
 
         //Initialise the White Pieces
         board[5].add(new WhitePiece());
@@ -57,9 +57,9 @@ public class Board{
         board[7].add(new WhitePiece());
         board[12].add(new WhitePiece());
         board[12].add(new WhitePiece());
-        board[23].add(new WhitePiece());
-        board[23].add(new WhitePiece());
-        board[23].add(new WhitePiece());
+        board[12].add(new WhitePiece());
+        board[12].add(new WhitePiece());
+        board[12].add(new WhitePiece());
         board[23].add(new WhitePiece());
         board[23].add(new WhitePiece());
 
@@ -81,11 +81,11 @@ public class Board{
         }
     }
 
-    public Stack<WhitePiece> getWhiteBar () {
+    public Stack<Piece> getWhiteBar () {
         return whiteBar;
     }
 
-    public Stack<BlackPiece> getBlackBar () {
+    public Stack<Piece> getBlackBar () {
         return blackBar;
     }
 
@@ -154,6 +154,10 @@ public class Board{
 
     private boolean isClearLegal (Clear clear, Dice dice) {
 
+        if (dice.used()) {
+            return false;
+        }
+
         int total = 0;
         if (clear.white()) {
 
@@ -191,7 +195,7 @@ public class Board{
         return true;
     }
 
-    private boolean isClearLegal (Clear clear, Dice dice1, Dice dice2) {
+    private boolean isClearLegal (Clear clear, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
 
         if (clear.white() && !whiteBar.empty()) {
             return false;
@@ -199,38 +203,40 @@ public class Board{
             return false;
         }
 
-        if (dice1.used() && dice2.used()) {
-            return false;
-        } else if (dice2.used()) {
-            return isClearLegal(clear, dice1);
-        } else if (dice1.used()) {
-            return isClearLegal(clear, dice2);
-        } else {
-            return isClearLegal(clear, dice1) || isClearLegal(clear, dice2);
-        }
+        return isClearLegal(clear, dice1) || isClearLegal(clear, dice2) || isClearLegal(clear, dice3) || isClearLegal(clear, dice4);
     }
 
-    public boolean clear (Clear clear, Dice dice1, Dice dice2) {
+    public boolean clear (Clear clear, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
 
-        if (!isClearLegal(clear, dice1, dice2)) {
+        if (!isClearLegal(clear, dice1, dice2, dice3, dice4)) {
             return false;
         }
 
         board[clear.getFrom()].pop();
 
         if (clear.white()) {
-            if (clear.getFrom() == dice1.getValue() - 1) {
+            if (clear.getFrom() == dice1.getValue() - 1 && !dice1.used()) {
                 dice1.setUsed(true);
-            } else {
+            } else if (clear.getFrom() == dice2.getValue() - 1 && !dice2.used()) {
                 dice2.setUsed(true);
+            } else if (clear.getFrom() == dice3.getValue() - 1 && !dice3.used()) {
+                dice3.setUsed(true);
+            } else if (clear.getFrom() == dice4.getValue() - 1 && !dice4.used()) {
+                dice4.setUsed(true);
             }
+
             numberOfWhitePieces --;
         } else {
-            if (SIZE - clear.getFrom() == dice1.getValue()) {
+            if (SIZE - clear.getFrom() == dice1.getValue() && !dice1.used()) {
                 dice1.setUsed(true);
-            } else {
+            } else if (SIZE - clear.getFrom() == dice2.getValue() && !dice2.used()) {
                 dice2.setUsed(true);
+            } else if (SIZE - clear.getFrom() == dice3.getValue() && !dice3.used()) {
+                dice3.setUsed(true);
+            } else if (SIZE - clear.getFrom() == dice4.getValue() && !dice4.used()) {
+                dice4.setUsed(true);
             }
+
             numberOfBlackPieces --;
         }
 

@@ -7,21 +7,32 @@ public class MouseEventConstructor {
     private static boolean eventConstructed = false;
 
     public static void registerColumnInput (int column) {
-        if (!(currentEvent instanceof Move) || eventConstructed) {
+         if (currentEvent instanceof Move && !eventConstructed) {
+             ((Move) currentEvent).setTo(column);
+            eventConstructed = true;
+        } else if (currentEvent instanceof Revive && !eventConstructed) {
+            ((Revive) currentEvent).setTo(column);
+            eventConstructed = true;
+        } else if (!(currentEvent instanceof Move) || eventConstructed) {
             //Start making new move
             currentEvent = new Move(column, 0, true);
             eventConstructed = false;
-        } else if (currentEvent instanceof Move && !eventConstructed) {
-             ((Move) currentEvent).setTo(column);
-            eventConstructed = true;
         }
     }
 
-    public static Event getCurrentEvent () {
+    public static void registerBarInput () {
+        currentEvent = new Revive(0, true);
+        eventConstructed = false;
+    }
+
+    public static Event nextEvent () {
         if (!eventConstructed) {
             return null;
         } else {
-            return currentEvent;
+            eventConstructed = false;
+            Event temp = currentEvent;
+            currentEvent = new Event();
+            return temp;
         }
     }
 }

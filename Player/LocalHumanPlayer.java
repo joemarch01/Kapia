@@ -2,6 +2,7 @@ package Player;
 
 
 import Event.*;
+import Graphics.MouseEventConstructor;
 
 import java.util.Scanner;
 
@@ -12,7 +13,7 @@ public class LocalHumanPlayer extends Player {
     }
 
     public Event fetchNextEvent () {
-        Scanner scanner = new Scanner(System.in);
+/*        Scanner scanner = new Scanner(System.in);
         String command = scanner.nextLine();
         String[] commandArgs = command.split(":");
 
@@ -28,7 +29,21 @@ public class LocalHumanPlayer extends Player {
             return new Revive(Integer.valueOf(commandArgs[1]), isWhite);
         } else if (commandArgs[0].equals("skip")) {
             return new Skip();
+        }*/
+
+        Event result = null;
+
+        do {
+            result = MouseEventConstructor.nextEvent();
+        } while (result == null);
+
+        if (result instanceof Move) {
+            ((Move) result).setWhite(isWhite);
+        } else if (result instanceof Revive) {
+            ((Revive) result).setWhite(isWhite);
         }
-        return new Event();
+        return result;
+
+        //return new Event();
     }
 }

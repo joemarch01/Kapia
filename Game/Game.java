@@ -97,12 +97,12 @@ public class Game {
 
 
 
-        for (WhitePiece _ : board.getWhiteBar()) {
+        for (Piece p : board.getWhiteBar()) {
             System.out.printf("W ");
         }
         System.out.println();
 
-        for (BlackPiece _ : board.getBlackBar()) {
+        for (Piece p : board.getBlackBar()) {
             System.out.printf("B ");
         }
         System.out.println();
@@ -134,14 +134,19 @@ public class Game {
         if (event instanceof Move) {
             if (board.move((Move)event, dice1, dice2, dice3, dice4)) {
                 displayBoardCommandLine();
+                window.repaint();
             }
         } else if (event instanceof Quit) {
             finished = true;
         } else if (event instanceof Message) {
             System.out.println(((Message) event).getMessage());
         } else if (event instanceof Clear) {
-            if (board.clear((Clear)event, dice1, dice2)) {
+            if (board.clear((Clear)event, dice1, dice2, dice3, dice4)) {
                 displayBoardCommandLine();
+                if(board.isGameWon()){
+                    System.out.println(currentPlayer.getTag() + " wins");
+                    handleEvent(new Quit());
+                }
             }
         } else if (event instanceof Revive) {
             if (board.revive((Revive)event, dice1, dice2, dice3, dice4)) {
@@ -150,6 +155,7 @@ public class Game {
         } else if (event instanceof Skip) {
             useDice();
         }
+        window.repaint();
     }
 
     private void rollDice () {
@@ -177,6 +183,8 @@ public class Game {
                 Player temp = player2;
                 player2 = player1;
                 player1 = temp;
+                player1.setWhite(true);
+                player2.setWhite(false);
             }
 
 

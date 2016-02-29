@@ -12,6 +12,10 @@ public abstract class Player {
         this.isWhite = isWhite;
     }
 
+    public void setWhite (boolean isWhite) {
+        this.isWhite = isWhite;
+    }
+
     public String getTag () {
         return tag;
     }

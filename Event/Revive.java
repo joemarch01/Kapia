@@ -14,6 +14,14 @@ public class Revive extends Event {
         return white;
     }
 
+    public void setWhite (boolean white) {
+        this.white = white;
+    }
+
+    public void setTo (int to) {
+        this.to = to;
+    }
+
     public int getTo () {
         return to;
     }

@@ -1,16 +1,12 @@
 package Graphics;
 
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class ColumnInputListener implements MouseListener {
-
-    int column;
-
-    public ColumnInputListener (int column) {
-        this.column = column;
-    }
+/**
+ * Created by jm360 on 29/02/16.
+ */
+public class BarInputListener implements MouseListener {
 
     public void mouseEntered(MouseEvent event){
 
@@ -21,8 +17,8 @@ public class ColumnInputListener implements MouseListener {
     }
 
     public void mouseClicked (MouseEvent event) {
-        MouseEventConstructor.registerColumnInput(column);
-        System.out.println("Clicked : " + column);
+        System.out.println("Bar Clicked");
+        MouseEventConstructor.registerBarInput();
     }
 
     public void mousePressed (MouseEvent event) {
@@ -32,5 +28,4 @@ public class ColumnInputListener implements MouseListener {
     public void mouseReleased (MouseEvent event) {
 
     }
-
 }

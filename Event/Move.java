@@ -12,6 +12,10 @@ public class Move extends Event {
         this.white = white;
     }
 
+    public  void setWhite (boolean white) {
+        this.white = white;
+    }
+
     public int getFrom() {
         return from;
     }
