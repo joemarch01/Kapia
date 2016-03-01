@@ -42,6 +42,9 @@ public class LocalHumanPlayer extends Player {
         } else if (result instanceof Revive) {
             ((Revive) result).setWhite(isWhite);
         }
+
+        System.out.println("Done");
+
         return result;
 
         //return new Event();
