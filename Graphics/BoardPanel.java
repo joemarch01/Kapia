@@ -22,10 +22,12 @@ public class BoardPanel extends JLabel {
 
         add(new BarContainer(board.getWhiteBar(), true));
         add(new BarContainer(board.getBlackBar(), false));
+        add(new FinishZoneContainer(true));
+        add(new FinishZoneContainer(false));
     }
 
     public void paintComponent (Graphics g) {
-        g.drawImage(ResourceManager.getBoardImage(), 0, 0, GameWindow.WIDTH, GameWindow.HEIGHT, null);
+        g.drawImage(ResourceManager.getBoardImage(), 100, 0, GameWindow.WIDTH, GameWindow.HEIGHT, null);
     }
 
 }

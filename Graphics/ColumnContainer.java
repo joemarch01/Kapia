@@ -17,9 +17,9 @@ public class ColumnContainer extends JPanel {
     ColumnContainer(int column, Stack<Piece> stack){
         super();
         if (column < Board.SIZE / 2) {
-            setBounds((int)(GameWindow.WIDTH - GameWindow.WIDTH*((column + 1) / 12.0)), GameWindow.HEIGHT/2, GameWindow.WIDTH/12, GameWindow.HEIGHT/2);
+            setBounds((int)(GameWindow.WIDTH - GameWindow.WIDTH*((column + 1) / 12.0)) + 100, GameWindow.HEIGHT/2, GameWindow.WIDTH/12, GameWindow.HEIGHT/2);
         } else {
-            setBounds((int)(GameWindow.WIDTH - GameWindow.WIDTH*((Board.SIZE - column)/12.0)), 0, GameWindow.WIDTH/12, GameWindow.HEIGHT/2);
+            setBounds((int)(GameWindow.WIDTH - GameWindow.WIDTH*((Board.SIZE - column)/12.0)) + 100, 0, GameWindow.WIDTH/12, GameWindow.HEIGHT/2);
 
         }
         this.stack = stack;

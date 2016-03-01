@@ -239,6 +239,10 @@ public class Game {
         }
     }
 
+    public void setClearState () {
+        board.setClearState();
+    }
+
     public void setToReviveState () {
         board.setToReviveState();
     }

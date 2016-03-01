@@ -73,6 +73,48 @@ public class Board{
         blackBar.push((BlackPiece)board[0].pop());
     }
 
+    public void setClearState () {
+
+        for (Stack<Piece> p : board) {
+            p.clear();
+        }
+
+        //Initialise the Black Pieces
+        board[23].add(new BlackPiece());
+        board[23].add(new BlackPiece());
+        board[23].add(new BlackPiece());
+        board[21].add(new BlackPiece());
+        board[21].add(new BlackPiece());
+        board[22].add(new BlackPiece());
+        board[22].add(new BlackPiece());
+        board[20].add(new BlackPiece());
+        board[20].add(new BlackPiece());
+        board[20].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+        board[18].add(new BlackPiece());
+
+        //Initialise the White Pieces
+        board[5].add(new WhitePiece());
+        board[5].add(new WhitePiece());
+        board[5].add(new WhitePiece());
+        board[5].add(new WhitePiece());
+        board[5].add(new WhitePiece());
+        board[0].add(new WhitePiece());
+        board[0].add(new WhitePiece());
+        board[0].add(new WhitePiece());
+        board[3].add(new WhitePiece());
+        board[3].add(new WhitePiece());
+        board[3].add(new WhitePiece());
+        board[4].add(new WhitePiece());
+        board[4].add(new WhitePiece());
+        board[2].add(new WhitePiece());
+        board[2].add(new WhitePiece());
+
+    }
+
     public Stack<Piece> getColumn (int column) {
         if (column >= SIZE) {
             return null;
@@ -251,9 +293,17 @@ public class Board{
         if (revive.getWhite()) {
             if (SIZE - revive.getTo() != dice.getValue()) {
                 return false;
+            }  else if (board[revive.getTo()].size() > 1 && board[revive.getTo()].peek() instanceof BlackPiece) {
+                return false;
+            } else if (revive.getTo() < SIZE - 6) {
+                return false;
             }
         } else {
             if (revive.getTo() + 1 != dice.getValue()) {
+                return false;
+            } else if (board[revive.getTo()].size() > 1 && board[revive.getTo()].peek() instanceof WhitePiece) {
+                return false;
+            } else if (revive.getTo() > 5) {
                 return false;
             }
         }
@@ -273,17 +323,9 @@ public class Board{
         if (revive.getWhite()) {
             if (whiteBar.empty()) {
                 return false;
-            } else if (board[revive.getTo()].size() > 1 && board[revive.getTo()].peek() instanceof BlackPiece) {
-                return false;
-            } else if (revive.getTo() < SIZE - 6) {
-                return false;
             }
         } else {
             if (blackBar.empty()) {
-                return false;
-            } else if (board[revive.getTo()].size() > 1 && board[revive.getTo()].peek() instanceof WhitePiece) {
-                return false;
-            } else if (revive.getTo() > 5) {
                 return false;
             }
         }
@@ -292,6 +334,12 @@ public class Board{
 
     public boolean revive (Revive revive, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
         if (!isReviveLegal(revive, dice1, dice2, dice3, dice4)) {
+            return false;
+        }
+
+        if (revive.getWhite() && whiteBar.empty()) {
+            return false;
+        } else if (!revive.getWhite() && blackBar.empty()) {
             return false;
         }
 
@@ -308,13 +356,14 @@ public class Board{
             }
         } else {
             if (!board[revive.getTo()].empty() && board[revive.getTo()].peek() instanceof BlackPiece) {
-                board[revive.getTo()].push(whiteBar.pop());
-            }
-            if (board[revive.getTo()].size() == 1 && board[revive.getTo()].peek() instanceof WhitePiece) {
-                whiteBar.push((WhitePiece) board[revive.getTo()].pop());
+                board[revive.getTo()].push(blackBar.pop());
+            } else if (board[revive.getTo()].size() == 1 && board[revive.getTo()].peek() instanceof WhitePiece) {
+                whiteBar.push(board[revive.getTo()].pop());
+                board[revive.getTo()].push(blackBar.pop());
+            } else if (board[revive.getTo()].size() == 0) {
                 board[revive.getTo()].push(blackBar.pop());
             } else {
-                board[revive.getTo()].push(blackBar.pop());
+                return false;
             }
         }
 

@@ -18,7 +18,7 @@ public class GameWindow extends JFrame {
     public GameWindow (Game game) {
         this.game = game;
         this.setVisible(true);
-        this.setBounds(0, 0, WIDTH, HEIGHT + 100);
+        this.setBounds(0, 0, WIDTH + 200, HEIGHT + 100);
         game.setWindow(this);
         boardPanel = new BoardPanel(new ImageIcon(ResourceManager.getBoardImage()), game.getBoard());
         getContentPane().add(boardPanel);

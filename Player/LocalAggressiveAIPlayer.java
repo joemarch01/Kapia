@@ -28,7 +28,7 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
             }
         } else if (!isWhite && !board.getBlackBar().empty()) {
             //Revive black piece
-            Revive revive = new Revive(d - 1, true);
+            Revive revive = new Revive(d - 1, false);
             if (board.isReviveLegal(revive, dice)) {
                 return revive;
             } else {
@@ -93,6 +93,16 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
         Event move2 = bestMoveForDice(dice2);
         Event move3 = bestMoveForDice(dice3);
         Event move4 = bestMoveForDice(dice4);
+
+        if (move1 instanceof Revive) {
+            return move1;
+        } else if (move2 instanceof Revive) {
+            return move2;
+        } else if (move3 instanceof Revive) {
+            return move3;
+        } else if (move4 instanceof Revive) {
+            return move4;
+        }
 
         if (move1 != null) {
             return move1;

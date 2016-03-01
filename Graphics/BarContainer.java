@@ -14,9 +14,9 @@ public class BarContainer extends JPanel {
     public BarContainer (Stack<Piece> stack, boolean isWhite) {
         this.stack = stack;
         if (isWhite) {
-            setBounds(GameWindow.WIDTH + 50, 0, 100, GameWindow.HEIGHT/2);
+            setBounds(0, 0, 100, GameWindow.HEIGHT/2);
         } else {
-            setBounds(GameWindow.WIDTH + 50, GameWindow.HEIGHT/2, 100, GameWindow.HEIGHT/2);
+            setBounds(0, GameWindow.HEIGHT/2, 100, GameWindow.HEIGHT/2);
         }
         addMouseListener(new BarInputListener());
     }

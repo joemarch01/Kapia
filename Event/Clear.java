@@ -9,6 +9,10 @@ public class Clear extends Event {
         this.isWhite = isWhite;
     }
 
+    public void setWhite (boolean isWhite) {
+        this.isWhite = isWhite;
+    }
+
     public int getFrom () {
         return from;
     }
