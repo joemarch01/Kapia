@@ -12,7 +12,7 @@ public class BoardPanel extends JLabel {
     public BoardPanel (ImageIcon imageIcon, Board board) {
 
         super(new ImageIcon(imageIcon.getImage().getScaledInstance(GameWindow.WIDTH, GameWindow.HEIGHT, Image.SCALE_DEFAULT)));
-        setBounds(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
+        setBounds(0, 0, GameWindow.WIDTH + 400, GameWindow.HEIGHT);
 
         this.board = board;
 
