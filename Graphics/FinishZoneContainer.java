@@ -24,12 +24,13 @@ public class FinishZoneContainer extends JPanel {
     }
 
     public void paintComponent (Graphics g) {
-        if (isWhite) {
+        g.drawImage(ResourceManager.getBarImage(), 100, 0, -100, 250, null);
+        /*if (isWhite) {
             g.setColor(Color.white);
             g.fillRect(0,0,10000,10000);
         } else {
             g.setColor(Color.black);
             g.fillRect(0,0,10000,10000);
-        }
+        }*/
     }
 }

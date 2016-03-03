@@ -14,10 +14,10 @@ public class Game {
     Player currentPlayer;
     Stack<Event> eventStack;
     boolean finished;
-    Dice dice1;
-    Dice dice2;
-    Dice dice3;
-    Dice dice4;
+    public Dice dice1;
+    public Dice dice2;
+    public Dice dice3;
+    public Dice dice4;
     GameWindow window;
 
     public Game (Player player1, Player player2) {

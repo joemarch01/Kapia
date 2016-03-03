@@ -7,6 +7,7 @@ public class Dice {
 
     public Dice () {
         isUsed = false;
+        value = 1;
     }
 
     public void roll () {
