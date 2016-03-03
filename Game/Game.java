@@ -4,6 +4,7 @@ import Graphics.GameWindow;
 import Player.*;
 import Event.*;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
@@ -12,7 +13,7 @@ public class Game {
     Player player1;
     Player player2;
     Player currentPlayer;
-    Stack<Event> eventStack;
+    ArrayList<Event> eventStack;
     boolean finished;
     public Dice dice1;
     public Dice dice2;
@@ -24,7 +25,7 @@ public class Game {
         this.player1 = player1;
         this.player2 = player2;
         board = new Board();
-        eventStack = new Stack<Event>();
+        eventStack = new ArrayList<Event>();
         this.finished = false;
         dice1 = new Dice();
         dice2 = new Dice();
@@ -133,16 +134,17 @@ public class Game {
     private void handleEvent (Event event) {
         if (event instanceof Move) {
             if (board.move((Move)event, dice1, dice2, dice3, dice4)) {
-                displayBoardCommandLine();
-                window.repaint();
+                eventStack.add(event);
             }
         } else if (event instanceof Quit) {
             finished = true;
+            eventStack.add(event);
         } else if (event instanceof Message) {
             System.out.println(((Message) event).getMessage());
+            eventStack.add(event);
         } else if (event instanceof Clear) {
             if (board.clear((Clear)event, dice1, dice2, dice3, dice4)) {
-                displayBoardCommandLine();
+                eventStack.add(event);
                 if(board.isGameWon()){
                     System.out.println(currentPlayer.getTag() + " wins");
                     handleEvent(new Quit());
@@ -150,12 +152,19 @@ public class Game {
             }
         } else if (event instanceof Revive) {
             if (board.revive((Revive)event, dice1, dice2, dice3, dice4)) {
-                displayBoardCommandLine();
+                eventStack.add(event);
             }
         } else if (event instanceof Skip) {
+            eventStack.add(event);
             useDice();
         }
         window.repaint();
+    }
+
+    private void handleEvents (ArrayList<Event> events) {
+        for (Event event : events) {
+            handleEvent(event);
+        }
     }
 
     private void rollDice () {
@@ -169,7 +178,7 @@ public class Game {
         }
     }
 
-    public void play () {
+    private void decideOnFirst () {
         do{
             System.out.print(player1.getTag() + " rolls: ");
             dice1.roll();
@@ -190,13 +199,16 @@ public class Game {
 
 
         } while(dice1.getValue() == dice2.getValue());
+    }
+
+    public void play () {
 
         System.out.println(player1.getTag() + " to start");
 
+        decideOnFirst();
+
         while (!finished) {
-            displayBoardCommandLine();
             window.repaint();
-            System.out.println(dice1.getValue() + " : " + dice2.getValue());
             System.out.println(player1.getTag() + "(white)'s move");
             currentPlayer = player1;
             Event event = new Event();
@@ -208,7 +220,7 @@ public class Game {
 
             while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !(event instanceof Quit)) {
                 event = player1.fetchNextEvent();
-                handleEvent(event);
+                handleEvent(player1.fetchNextEvent());
             }
             handleEvent(event);
 
@@ -216,11 +228,7 @@ public class Game {
                 break;
             }
 
-            displayBoardCommandLine();
-            window.repaint();
-
             rollDice();
-            System.out.println(dice1.getValue() + " : " + dice2.getValue());
             System.out.println(player2.getTag() + "(black)'s move");
             currentPlayer = player2;
 

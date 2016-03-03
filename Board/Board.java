@@ -217,6 +217,10 @@ public class Board{
                 return false;
             }
 
+            if (clear.getFrom() != dice.getValue() - 1) {
+                return false;
+            }
+
         } else {
 
             if (clear.getFrom() < SIZE - 6 || clear.getFrom() < 0 || clear.getFrom() >= SIZE) {
@@ -230,6 +234,10 @@ public class Board{
             }
 
             if (total != numberOfBlackPieces) {
+                return false;
+            }
+
+            if (clear.getFrom() != SIZE - dice.getValue() - 1) {
                 return false;
             }
         }

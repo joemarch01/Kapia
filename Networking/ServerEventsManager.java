@@ -28,6 +28,10 @@ public class ServerEventsManager {
 
     }
 
+    public void postEvent (Event event) {
+
+    }
+
     public Event parseEventString (String eventString) {
         return new Event();
     }

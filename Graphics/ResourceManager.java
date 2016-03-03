@@ -17,17 +17,17 @@ public class ResourceManager {
 
     public static void load () {
         try {
-            boardImage =  ImageIO.read(new File("../Board.png"));
-            whitePieceImage = ImageIO.read(new File("../WhitePiece1.png"));
-            blackPieceImage = ImageIO.read(new File("../BlackPiece1.png"));
-            barImage = ImageIO.read(new File("../Bar.png"));
-            dice[0] = ImageIO.read(new File("../Dice1.png"));
-            dice[1] = ImageIO.read(new File("../Dice2.png"));
-            dice[2] = ImageIO.read(new File("../Dice3.png"));
-            dice[3] = ImageIO.read(new File("../Dice4.png"));
-            dice[4] = ImageIO.read(new File("../Dice5.png"));
-            dice[5] = ImageIO.read(new File("../Dice6.png"));
-            bottomImage = ImageIO.read(new File("../BottomPiece.png"));
+            boardImage =  ImageIO.read(new File("../Images/Board.png"));
+            whitePieceImage = ImageIO.read(new File("../Images/WhitePiece.png"));
+            blackPieceImage = ImageIO.read(new File("../Images/BlackPiece.png"));
+            barImage = ImageIO.read(new File("../Images/Bar.png"));
+            dice[0] = ImageIO.read(new File("../Images/Dice1.png"));
+            dice[1] = ImageIO.read(new File("../Images/Dice2.png"));
+            dice[2] = ImageIO.read(new File("../Images/Dice3.png"));
+            dice[3] = ImageIO.read(new File("../Images/Dice4.png"));
+            dice[4] = ImageIO.read(new File("../Images/Dice5.png"));
+            dice[5] = ImageIO.read(new File("../Images/Dice6.png"));
+            bottomImage = ImageIO.read(new File("../Images/BottomPiece.png"));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
