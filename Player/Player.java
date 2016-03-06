@@ -26,5 +26,5 @@ public abstract class Player {
         return tag;
     }
 
-    public abstract Event fetchNextEvent ();
+    public abstract ArrayList<Event> fetchNextEvent ();
 }

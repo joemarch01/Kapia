@@ -201,6 +201,21 @@ public class Game {
         } while(dice1.getValue() == dice2.getValue());
     }
 
+    private void updatePlayer (Player player) {
+        ArrayList<Event> events = new ArrayList<Event>();
+
+        if (player instanceof LocalAIPlayer) {
+            ((LocalAIPlayer) player).setBoard(board);
+            ((LocalAIPlayer) player).setDice(dice1, dice2, dice3, dice4);
+        }
+
+        while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !finished) {
+            events = player.fetchNextEvent();
+            handleEvents(events);
+        }
+        handleEvents(events);
+    }
+
     public void play () {
 
         System.out.println(player1.getTag() + " to start");
@@ -211,18 +226,8 @@ public class Game {
             window.repaint();
             System.out.println(player1.getTag() + "(white)'s move");
             currentPlayer = player1;
-            Event event = new Event();
 
-            if (player1 instanceof LocalAIPlayer) {
-                ((LocalAIPlayer) player1).setBoard(board);
-                ((LocalAIPlayer) player1).setDice(dice1, dice2, dice3, dice4);
-            }
-
-            while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !(event instanceof Quit)) {
-                event = player1.fetchNextEvent();
-                handleEvent(player1.fetchNextEvent());
-            }
-            handleEvent(event);
+            updatePlayer(currentPlayer);
 
             if (finished) {
                 break;
@@ -232,16 +237,7 @@ public class Game {
             System.out.println(player2.getTag() + "(black)'s move");
             currentPlayer = player2;
 
-            if (player2 instanceof LocalAIPlayer) {
-                ((LocalAIPlayer) player2).setBoard(board);
-                ((LocalAIPlayer) player2).setDice(dice1, dice2, dice3, dice4);
-            }
-
-            while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !(event instanceof Quit)) {
-                event = player2.fetchNextEvent();
-                handleEvent(event);
-            }
-            handleEvent(event);
+            updatePlayer(currentPlayer);
 
             rollDice();
         }

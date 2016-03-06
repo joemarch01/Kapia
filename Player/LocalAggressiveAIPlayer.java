@@ -5,6 +5,8 @@ import Board.*;
 import Event.*;
 import Game.Dice;
 
+import java.util.ArrayList;
+
 public class LocalAggressiveAIPlayer extends LocalAIPlayer {
 
     public LocalAggressiveAIPlayer (boolean isWhite) {
@@ -87,7 +89,9 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
         return currentBestMove;
     }
 
-    public Event fetchNextEvent () {
+    public ArrayList<Event> fetchNextEvent () {
+
+        ArrayList<Event> result = new ArrayList<Event>();
 
         Event move1 = bestMoveForDice(dice1);
         Event move2 = bestMoveForDice(dice2);
@@ -95,25 +99,27 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
         Event move4 = bestMoveForDice(dice4);
 
         if (move1 instanceof Revive) {
-            return move1;
+            result.add(move1);
         } else if (move2 instanceof Revive) {
-            return move2;
+            result.add(move2);
         } else if (move3 instanceof Revive) {
-            return move3;
+            result.add(move3);
         } else if (move4 instanceof Revive) {
-            return move4;
+            result.add(move4);
         }
 
         if (move1 != null) {
-            return move1;
+            result.add(move1);
         } else if (move2 != null) {
-            return move2;
+            result.add(move2);
         } else if (move3 != null) {
-            return move3;
+            result.add(move3);
         } else if (move4 != null) {
-            return move4;
+            result.add(move4);
         }
 
-        return new Skip();
+        result.add(new Skip());
+
+        return result;
     }
 }

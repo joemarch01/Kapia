@@ -4,6 +4,7 @@ package Player;
 import Event.*;
 import Graphics.MouseEventConstructor;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class LocalHumanPlayer extends Player {
@@ -12,9 +13,10 @@ public class LocalHumanPlayer extends Player {
         super(tag, isWhite);
     }
 
-    public Event fetchNextEvent () {
+    public ArrayList<Event> fetchNextEvent () {
 
         Event result;
+        ArrayList<Event> resultSet = new ArrayList<Event>();
 
         do {
             try {
@@ -36,7 +38,9 @@ public class LocalHumanPlayer extends Player {
 
         System.out.println("Done");
 
-        return result;
+        resultSet.add(result);
+
+        return resultSet;
 
         //return new Event();
     }
