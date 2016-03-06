@@ -179,6 +179,23 @@ public class Game {
     }
 
     private void decideOnFirst () {
+
+        if (player2 instanceof NetworkHumanPlayer) {
+
+            String s = ((NetworkHumanPlayer) player2).readFromNetwork();
+
+            if (s == null) {
+                ((NetworkHumanPlayer) player2).writeToNetwork("Me first");
+            } else {
+                Player temp = player2;
+                player2 = player1;
+                player2 = temp;
+                player1.setWhite(true);
+                player2.setWhite(false);
+                System.out.println(s);
+            }
+        }
+
         do{
             System.out.print(player1.getTag() + " rolls: ");
             dice1.roll();
@@ -196,24 +213,36 @@ public class Game {
                 player2.setWhite(false);
             }
 
-
-
         } while(dice1.getValue() == dice2.getValue());
     }
 
     private void updatePlayer (Player player) {
         ArrayList<Event> events = new ArrayList<Event>();
+        ArrayList<Event> gameEvents = new ArrayList<Event>();
 
         if (player instanceof LocalAIPlayer) {
             ((LocalAIPlayer) player).setBoard(board);
             ((LocalAIPlayer) player).setDice(dice1, dice2, dice3, dice4);
+        } else if (player instanceof NetworkHumanPlayer) {
+            events = player.fetchNextEvent();
+
+            handleEvents(events);
+            return;
         }
 
         while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !finished) {
             events = player.fetchNextEvent();
+            gameEvents.addAll(events);
             handleEvents(events);
         }
+        gameEvents.addAll(events);
         handleEvents(events);
+
+        if (player == player1) {
+            player2.updateGameState(gameEvents);
+        } else {
+            player1.updateGameState(gameEvents);
+        }
     }
 
     public void play () {

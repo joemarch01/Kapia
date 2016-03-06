@@ -125,6 +125,7 @@ public class Main {
                 Game game = getGameFromConsole();
                 if (game != null) {
                     GameWindow gameWindow = new GameWindow(game);
+                    game.setClearState();
                     game.play();
                 }
             } else if (input.equals("quit")) {
