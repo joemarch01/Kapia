@@ -217,9 +217,17 @@ public class Board{
                 return false;
             }
 
-            if (clear.getFrom() != dice.getValue() - 1) {
+/*            if (clear.getFrom() != dice.getValue() - 1) {
                 return false;
+            }*/
+
+            if(clear.getFrom() < dice.getValue() - 1){
+                for(int column = clear.getFrom() + 1 ; column <= 5 ; column++){
+                    if(!board[column].empty()) return false;
+                }
             }
+
+            if(clear.getFrom() > dice.getValue() - 1) return false;
 
         } else {
 
@@ -237,11 +245,22 @@ public class Board{
                 return false;
             }
 
-            if (clear.getFrom() != SIZE - dice.getValue() - 1) {
-                return false;
-            }
-        }
+            if(clear.getFrom() > SIZE - dice.getValue()){
 
+                for(int column = clear.getFrom() - 1; column >= 18 ; column--){
+                    if(!board[column].empty()) return false;
+                }
+            }
+
+            if(clear.getFrom() < SIZE - dice.getValue()) return false;
+
+
+
+/*            if (clear.getFrom() != SIZE - dice.getValue()) {
+                return false;
+            }*/
+        }
+         if(board[clear.getFrom()].empty()) return false;
         return true;
     }
 
