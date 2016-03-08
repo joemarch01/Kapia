@@ -43,87 +43,6 @@ public class Game {
         this.window = window;
     }
 
-    public void displayBoardCommandLine () {
-
-
-        for (int i = 0; i < Board.SIZE/2; i ++) {
-            System.out.printf(i + " : ");
-
-            if (!board.getColumn(i).empty()) {
-                if (board.getColumn(i).get(0) instanceof WhitePiece) {
-                    for (int j = 0; j < board.getColumn(i).size(); j ++) {
-                        System.out.printf("W");
-                    }
-                    for (int j = 0; j < 15 - board.getColumn(i).size(); j ++) {
-                        System.out.printf(" ");
-                    }
-                } else {
-                    for (int j = 0; j < board.getColumn(i).size(); j ++) {
-                        System.out.printf("B");
-                    }
-                    for (int j = 0; j < 15 - board.getColumn(i).size(); j ++) {
-                        System.out.printf(" ");
-                    }
-                }
-            } else {
-                System.out.printf("               ");
-            }
-
-            System.out.printf("\t\t");
-
-            if (!board.getColumn(Board.SIZE - i - 1).empty()) {
-                if (board.getColumn(Board.SIZE - i - 1).get(0) instanceof WhitePiece) {
-                    for (int j = 0; j < 15 - board.getColumn(Board.SIZE - i - 1).size(); j ++) {
-                        System.out.printf(" ");
-                    }
-                    for (int j = 0; j < board.getColumn(Board.SIZE - i - 1).size(); j ++) {
-                        System.out.printf("W");
-                    }
-                } else {
-                    for (int j = 0; j < 15 - board.getColumn(Board.SIZE - i - 1).size(); j ++) {
-                        System.out.printf(" ");
-                    }
-                    for (int j = 0; j < board.getColumn(Board.SIZE - i - 1).size(); j ++) {
-                        System.out.printf("B");
-                    }
-                }
-            } else {
-                System.out.printf("               ");
-            }
-
-            System.out.printf(" : " + (Board.SIZE - i - 1));
-            System.out.println();
-
-        }
-
-
-
-        for (Piece p : board.getWhiteBar()) {
-            System.out.printf("W ");
-        }
-        System.out.println();
-
-        for (Piece p : board.getBlackBar()) {
-            System.out.printf("B ");
-        }
-        System.out.println();
-
-        if(dice1.used() == false){
-            System.out.println( "Move: " + dice1.getValue());
-        }
-        if(dice2.used() == false){
-            System.out.println( "Move: " + dice2.getValue());
-        }
-        if(dice3.used() == false){
-            System.out.println( "Move: " + dice3.getValue());
-        }
-        if(dice4.used() == false){
-            System.out.println( "Move: " + dice4.getValue());
-        }
-
-
-    }
-
     private void useDice () {
         dice1.setUsed(true);
         dice2.setUsed(true);
@@ -135,6 +54,8 @@ public class Game {
         if (event instanceof Move) {
             if (board.move((Move)event, dice1, dice2, dice3, dice4)) {
                 eventStack.add(event);
+            } else {
+                System.out.println(currentPlayer.getTag() + " made an illegal move");
             }
         } else if (event instanceof Quit) {
             finished = true;
@@ -176,6 +97,7 @@ public class Game {
                     dice4.setUsed(false);
                     break;
             }
+            System.out.println("Dice : " + ((SetDice) event).getDiceNumber() + " set to : " + ((SetDice) event).getValue());
         }
         window.repaint();
     }
@@ -201,18 +123,21 @@ public class Game {
 
         if (player2 instanceof NetworkHumanPlayer) {
 
+            ((NetworkHumanPlayer) player2).writeToNetwork("Me first");
             String s = ((NetworkHumanPlayer) player2).readFromNetwork();
+            rollDice();
 
             if (s == null) {
-                ((NetworkHumanPlayer) player2).writeToNetwork("Me first");
+                System.out.println("Me first");
             } else {
                 Player temp = player2;
                 player2 = player1;
-                player2 = temp;
+                player1 = temp;
                 player1.setWhite(true);
                 player2.setWhite(false);
-                System.out.println(s);
+                System.out.println("Other guy first");
             }
+            return;
         }
 
         do{

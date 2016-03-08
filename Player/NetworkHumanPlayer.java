@@ -40,13 +40,25 @@ public class NetworkHumanPlayer extends Player {
         }
 
         if (!moveString.equals("")) {
-            moveString = moveString.substring(0, moveString.lastIndexOf(','));
-            moveString += ";";
+            try {
+                moveString = moveString.substring(0, moveString.lastIndexOf(','));
+                moveString += ";";
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                System.out.println("move error " + moveString);
+            }
+
         }
 
         if (!diceString.equals("")) {
-            diceString = moveString.substring(0, moveString.lastIndexOf('-'));
-            diceString += ":";
+            try {
+                diceString = diceString.substring(0, diceString.lastIndexOf('-'));
+                diceString += ":";
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                System.out.println("dice error " + diceString);
+            }
+
         }
 
         writeToNetwork(diceString + moveString);
@@ -82,21 +94,38 @@ public class NetworkHumanPlayer extends Player {
 
         //Can only do moves for now
 
-        String [] diceArgs = line.substring(0, line.lastIndexOf(':')).split("-");
-        String [] moveArgs = line.substring(line.lastIndexOf(":" + 1)).split(",");
+        String[] diceArgs = null;
+        String[] moveArgs = null;
+
+        try {
+            diceArgs = line.substring(0, line.lastIndexOf(':')).split("-");
+            moveArgs = line.substring(line.lastIndexOf(":") + 1).split(",");
+        } catch (Exception e) {
+            System.out.println("Event Parsing error : " + line);
+            return new ArrayList<Event>();
+        }
+
 
         ArrayList<Event> result = new ArrayList<Event>();
 
         for (int i = 0; i < diceArgs.length; i ++) {
-            result.add(new SetDice(i, Integer.valueOf(diceArgs[i])));
+            result.add(new SetDice(i + 1, Integer.valueOf(diceArgs[i])));
         }
 
         for (String move : moveArgs) {
-            move = move.replace('(', ' ');
-            move = move.replace(')', ' ');
-            String[] args = move.split("|");
-            Move newMove = new Move(Integer.valueOf(args[0]), Integer.valueOf(args[1]), isWhite);
-            result.add(newMove);
+            String[] args = null;
+            try {
+                move = move.replace("(", "");
+                move = move.replace(")", "");
+                move = move.replace(";", "");
+                args = move.split("\\|");
+                Move newMove = new Move(Integer.valueOf(args[0]), Integer.valueOf(args[1]), isWhite);
+                result.add(newMove);
+            } catch (Exception e) {
+                System.out.println("Move Error : " + move + " Args : " + args[0] + " " + args[1]);
+                System.out.println(e.getMessage());
+            }
+
         }
 
         return result;
@@ -104,9 +133,10 @@ public class NetworkHumanPlayer extends Player {
 
     public ArrayList<Event> fetchNextEvent () {
         String input = readFromNetwork();
-        while (input == null) {
+        while (input == null || input.equals("Me first")) {
             input = readFromNetwork();
         }
+        System.out.println("Network Events : " + input);
         return parseEventString(input);
     }
 }
