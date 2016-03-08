@@ -157,6 +157,25 @@ public class Game {
         } else if (event instanceof Skip) {
             eventStack.add(event);
             useDice();
+        } else if (event instanceof SetDice) {
+            switch (((SetDice) event).getDiceNumber()) {
+                case 1 :
+                    dice1.setValue(((SetDice) event).getValue());
+                    dice1.setUsed(false);
+                    break;
+                case 2 :
+                    dice2.setValue(((SetDice) event).getValue());
+                    dice2.setUsed(false);
+                    break;
+                case 3 :
+                    dice3.setValue(((SetDice) event).getValue());
+                    dice3.setUsed(false);
+                    break;
+                case 4 :
+                    dice4.setValue(((SetDice) event).getValue());
+                    dice4.setUsed(false);
+                    break;
+            }
         }
         window.repaint();
     }
@@ -225,9 +244,16 @@ public class Game {
             ((LocalAIPlayer) player).setDice(dice1, dice2, dice3, dice4);
         } else if (player instanceof NetworkHumanPlayer) {
             events = player.fetchNextEvent();
-
             handleEvents(events);
             return;
+        }
+
+        gameEvents.add(new SetDice(1, dice1.getValue()));
+        gameEvents.add(new SetDice(2, dice2.getValue()));
+
+        if (!dice3.used()) {
+            gameEvents.add(new SetDice(3, dice3.getValue()));
+            gameEvents.add(new SetDice(4, dice4.getValue()));
         }
 
         while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !finished) {

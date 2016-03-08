@@ -36,5 +36,8 @@ public class Move extends Event {
         this.to = to;
     }
 
+    public String toString () {
+        return "(" + from + "|" + to + "),";
+    }
 
 }
