@@ -168,6 +168,7 @@ public class Game {
             ((LocalAIPlayer) player).setBoard(board);
             ((LocalAIPlayer) player).setDice(dice1, dice2, dice3, dice4);
         } else if (player instanceof NetworkHumanPlayer) {
+            useDice();
             events = player.fetchNextEvent();
             handleEvents(events);
             return;
@@ -187,7 +188,6 @@ public class Game {
             handleEvents(events);
         }
         gameEvents.addAll(events);
-        handleEvents(events);
 
         if (player == player1) {
             player2.updateGameState(gameEvents);

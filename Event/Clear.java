@@ -20,4 +20,8 @@ public class Clear extends Event {
     public boolean white () {
         return isWhite;
     }
+
+    public String toString () {
+        return "(" + from + "|-1),";
+    }
 }

@@ -36,6 +36,10 @@ public class NetworkHumanPlayer extends Player {
                 moveString += event.toString();
             } else if (event instanceof SetDice) {
                 diceString += event.toString();
+            } else if (event instanceof Clear) {
+                moveString += event.toString();
+            } else if (event instanceof Revive) {
+                moveString += event.toString();
             }
         }
 
@@ -119,8 +123,11 @@ public class NetworkHumanPlayer extends Player {
                 move = move.replace(")", "");
                 move = move.replace(";", "");
                 args = move.split("\\|");
-                Move newMove = new Move(Integer.valueOf(args[0]), Integer.valueOf(args[1]), isWhite);
-                result.add(newMove);
+                if (args[1].equals("-1")) {
+                    result.add(new Clear(Integer.valueOf(args[0]), isWhite));
+                } else {
+                    result.add(new Move(Integer.valueOf(args[0]), Integer.valueOf(args[1]), isWhite));
+                }
             } catch (Exception e) {
                 System.out.println("Move Error : " + move + " Args : " + args[0] + " " + args[1]);
                 System.out.println(e.getMessage());

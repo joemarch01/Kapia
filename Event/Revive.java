@@ -25,4 +25,8 @@ public class Revive extends Event {
     public int getTo () {
         return to;
     }
+
+    public String toString () {
+        return "(-1|" + to + "),";
+    }
 }
