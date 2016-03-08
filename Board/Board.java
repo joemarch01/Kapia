@@ -284,25 +284,25 @@ public class Board{
         board[clear.getFrom()].pop();
 
         if (clear.white()) {
-            if (clear.getFrom() == dice1.getValue() - 1 && !dice1.used()) {
+            if (clear.getFrom() <= dice1.getValue() - 1 && !dice1.used()) {
                 dice1.setUsed(true);
-            } else if (clear.getFrom() == dice2.getValue() - 1 && !dice2.used()) {
+            } else if (clear.getFrom() <= dice2.getValue() - 1 && !dice2.used()) {
                 dice2.setUsed(true);
-            } else if (clear.getFrom() == dice3.getValue() - 1 && !dice3.used()) {
+            } else if (clear.getFrom() <= dice3.getValue() - 1 && !dice3.used()) {
                 dice3.setUsed(true);
-            } else if (clear.getFrom() == dice4.getValue() - 1 && !dice4.used()) {
+            } else if (clear.getFrom() <= dice4.getValue() - 1 && !dice4.used()) {
                 dice4.setUsed(true);
             }
 
             numberOfWhitePieces --;
         } else {
-            if (SIZE - clear.getFrom() == dice1.getValue() && !dice1.used()) {
+            if (SIZE - clear.getFrom() >= dice1.getValue() && !dice1.used()) {
                 dice1.setUsed(true);
-            } else if (SIZE - clear.getFrom() == dice2.getValue() && !dice2.used()) {
+            } else if (SIZE - clear.getFrom() >= dice2.getValue() && !dice2.used()) {
                 dice2.setUsed(true);
-            } else if (SIZE - clear.getFrom() == dice3.getValue() && !dice3.used()) {
+            } else if (SIZE - clear.getFrom() >= dice3.getValue() && !dice3.used()) {
                 dice3.setUsed(true);
-            } else if (SIZE - clear.getFrom() == dice4.getValue() && !dice4.used()) {
+            } else if (SIZE - clear.getFrom() >= dice4.getValue() && !dice4.used()) {
                 dice4.setUsed(true);
             }
 
