@@ -27,6 +27,8 @@ public class Game {
         board = new Board();
         eventStack = new ArrayList<Event>();
         this.finished = false;
+        player1.setBoard(board);
+        player2.setBoard(board);
         dice1 = new Dice();
         dice2 = new Dice();
         dice3 = new Dice();
