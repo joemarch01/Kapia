@@ -20,22 +20,13 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
 
         int d = dice.getValue();
 
-        if (isWhite && !board.getWhiteBar().empty()) {
-            //Revive white piece
-            Revive revive = new Revive(Board.SIZE - d, true);
-            if (board.isReviveLegal(revive, dice)) {
-                return revive;
-            } else {
-                return null;
-            }
-        } else if (!isWhite && !board.getBlackBar().empty()) {
-            //Revive black piece
-            Revive revive = new Revive(d - 1, false);
-            if (board.isReviveLegal(revive, dice)) {
-                return revive;
-            } else {
-                return null;
-            }
+        Event clear = super.canClear(dice);
+        Event revive = super.canRevive(dice);
+
+        if (revive != null) {
+            return revive;
+        } else if (clear != null) {
+            return clear;
         }
 
         Move currentBestMove = null;
