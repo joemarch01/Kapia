@@ -135,6 +135,10 @@ public class Board{
 
         if (dice.used()) {
             return false;
+        } else if (move.getWhite() && !whiteBar.empty()) {
+            return false;
+        } else if (!move.getWhite() && !blackBar.empty()) {
+            return false;
         }
 
         if (Math.abs(move.getFrom() - move.getTo()) != dice.getValue()) {
@@ -154,12 +158,6 @@ public class Board{
     }
 
     public boolean isMoveLegal (Move move, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
-
-        if (move.getWhite() && !whiteBar.empty()) {
-            return false;
-        } else if (!move.getWhite() && !blackBar.empty()) {
-            return false;
-        }
 
         return isMoveLegal(move, dice1) || isMoveLegal(move, dice2) || isMoveLegal(move, dice3) || isMoveLegal(move, dice4);
     }
