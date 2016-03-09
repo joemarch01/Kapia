@@ -183,6 +183,13 @@ public class Game {
         }
 
         while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !finished) {
+            if (!currentPlayer.isMovePossible(dice1, dice2, dice3, dice4)) {
+                events.clear();
+                events.add(new Skip());
+                handleEvents(events);
+                gameEvents.addAll(events);
+                break;
+            }
             events = player.fetchNextEvent();
             gameEvents.addAll(events);
             handleEvents(events);
