@@ -1,11 +1,13 @@
 package Player;
 
-import Board.Board;
+import Board.*;
 import Event.*;
 import Game.Dice;
 
+import java.util.ArrayList;
+import java.util.Stack;
+
 public abstract class LocalAIPlayer extends Player {
-    protected Board board;
     protected Dice dice1, dice2, dice3, dice4;
 
     public LocalAIPlayer (String tag, boolean isWhite) {
@@ -19,49 +21,77 @@ public abstract class LocalAIPlayer extends Player {
         this.dice4 = dice4;
     }
 
-    public void setBoard (Board board) {
-        this.board = board;
-    }
+    public ArrayList<Event> generateCaptureMoves (Dice dice) {
+        ArrayList<Event> result = new ArrayList<Event>();
+        for (int i = 0; i < board.SIZE; i ++) {
+            Stack<Piece> column = board.getColumn(i);
+            Move capture;
 
-    //Checks if AI can clear a piece; if so it returns that clear, returns null if none can be made
-    public Event canClear (Dice dice) {
-        if (isWhite) {
-            for (int i = 0; i < 6; i ++) {
-                Clear clear = new Clear(i, isWhite);
-                if (board.isClearLegal(clear, dice)) {
-                    return clear;
+            if (column.empty()) {
+                //Do nothing
+            } else if (isWhite && column.peek() instanceof WhitePiece) {
+                capture = new Move(i, i - dice.getValue(), isWhite);
+                if (i - dice.getValue() >= 0 && board.getColumn(i + dice.getValue()).size() == 1
+                        && board.getColumn(i + dice.getValue()).peek() instanceof BlackPiece) {
+                    result.add(capture);
                 }
-            }
-        } else {
-            for (int i = board.SIZE - 1; i > 17; i --) {
-                Clear clear = new Clear(i, isWhite);
-                if (board.isClearLegal(clear, dice)) {
-                    return clear;
+            } else if (!isWhite && column.peek() instanceof BlackPiece) {
+                capture = new Move(i, i + dice.getValue(), isWhite);
+                if (i + dice.getValue() < board.SIZE && board.getColumn(i + dice.getValue()).size() == 1
+                        && board.getColumn(i + dice.getValue()).peek() instanceof BlackPiece) {
+                    result.add(capture);
                 }
             }
         }
-        return null;
-    }
 
-    //Checks if AI can revive a piece; if so it returns that revive, returns null if none can be made
-    public Event canRevive (Dice dice) {
-        if (isWhite && !board.getWhiteBar().empty()) {
-            //Revive white piece
-            Revive revive = new Revive(Board.SIZE - dice.getValue(), true);
-            if (board.isReviveLegal(revive, dice)) {
-                return revive;
-            } else {
-                return null;
+        //Check if any revives can capture [FIX]
+/*        if (isWhite && !board.getWhiteBar().empty()) {
+            if (board.getColumn(dice.getValue() - 1).size() == 1 && board.getColumn(dice.getValue() - 1).peek() instanceof BlackPiece) {
+                result.add(new Revive(dice.getValue() - 1, isWhite));
             }
         } else if (!isWhite && !board.getBlackBar().empty()) {
-            //Revive black piece
-            Revive revive = new Revive(dice.getValue() - 1, false);
-            if (board.isReviveLegal(revive, dice)) {
-                return revive;
-            } else {
-                return null;
+            if (board.getColumn(board.SIZE - dice.getValue()).size() == 1 && board.getColumn(board.SIZE - dice.getValue()).peek() instanceof WhitePiece) {
+                result.add(new Revive(board.SIZE - dice.getValue(), isWhite));
             }
+        }*/
+
+        return result;
+    }
+
+    //A move is said to be a kapia if it moves a piece on it's own onto a stack of one or more pieces, thus preventing potential captures
+    //This method returns a list of any such moves
+
+    public ArrayList<Event> generateKapiaMoves (Dice dice) {
+        ArrayList<Event> result = new ArrayList<Event>();
+        for (int i = 0; i < Board.SIZE; i ++) {
+            Stack<Piece> column = board.getColumn(i);
+
+             if (isWhite && column.size() == 1 && column.peek() instanceof WhitePiece) {
+                Move move = new Move(i, i - dice.getValue(), isWhite);
+                 if (board.isMoveLegal(move, dice) && board.getColumn(i - dice.getValue()).size() >= 1
+                         && board.getColumn(i - dice.getValue()).peek() instanceof WhitePiece) {
+                     result.add(move);
+                 }
+             } else if (!isWhite && column.size() == 1 && column.peek() instanceof BlackPiece) {
+                 Move move = new Move(i, i + dice.getValue(), isWhite);
+                 if (board.isMoveLegal(move, dice) && board.getColumn(i + dice.getValue()).size() >= 1
+                         && board.getColumn(i + dice.getValue()).peek() instanceof BlackPiece) {
+                     result.add(move);
+                 }
+             }
         }
-        return null;
+
+        //[FIX]
+/*        if (isWhite && !board.getWhiteBar().empty()) {
+            if (board.getColumn(dice.getValue() - 1).size() >= 1 && board.getColumn(dice.getValue() - 1).peek() instanceof WhitePiece) {
+                result.add(new Revive(dice.getValue() - 1, isWhite));
+            }
+        } else if (!isWhite && !board.getBlackBar().empty()) {
+            if (board.getColumn(board.SIZE - dice.getValue()).size() >= 1 && board.getColumn(board.SIZE - dice.getValue()).peek() instanceof BlackPiece) {
+                result.add(new Revive(board.SIZE - dice.getValue(), isWhite));
+            }
+        }*/
+
+        return result;
     }
 }

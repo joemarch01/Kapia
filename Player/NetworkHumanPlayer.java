@@ -40,6 +40,8 @@ public class NetworkHumanPlayer extends Player {
                 moveString += event.toString();
             } else if (event instanceof Revive) {
                 moveString += event.toString();
+            } else if (event instanceof Skip) {
+                moveString += event.toString();
             }
         }
 
@@ -123,11 +125,16 @@ public class NetworkHumanPlayer extends Player {
                 move = move.replace(")", "");
                 move = move.replace(";", "");
                 args = move.split("\\|");
-                if (args[1].equals("-1")) {
+                if (args[0].equals("-1") && args[1].equals("-1")) {
+                    result.add(new Skip());
+                } else if (args[1].equals("-1")) {
                     result.add(new Clear(Integer.valueOf(args[0]), isWhite));
+                } else if (args[0].equals("-1")) {
+                    result.add(new Revive(Integer.valueOf(args[0]), isWhite));
                 } else {
                     result.add(new Move(Integer.valueOf(args[0]), Integer.valueOf(args[1]), isWhite));
                 }
+
             } catch (Exception e) {
                 System.out.println("Move Error : " + move + " Args : " + args[0] + " " + args[1]);
                 System.out.println(e.getMessage());
