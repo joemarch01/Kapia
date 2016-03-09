@@ -130,7 +130,7 @@ public class NetworkHumanPlayer extends Player {
                 } else if (args[1].equals("-1")) {
                     result.add(new Clear(Integer.valueOf(args[0]), isWhite));
                 } else if (args[0].equals("-1")) {
-                    result.add(new Revive(Integer.valueOf(args[0]), isWhite));
+                    result.add(new Revive(Integer.valueOf(args[1]), isWhite));
                 } else {
                     result.add(new Move(Integer.valueOf(args[0]), Integer.valueOf(args[1]), isWhite));
                 }
