@@ -23,6 +23,12 @@ public abstract class Player {
     public void setBoard(Board board) {
         this.board = board;
     }
+    public void setTag (String tag) {
+        this.tag = tag;
+    }
+    public boolean isWhite () {
+        return isWhite;
+    }
 
     public void updateGameState (ArrayList<Event> events) {
 
@@ -89,7 +95,7 @@ public abstract class Player {
                 Move move4 = new Move(i, i - dice4.getValue(), isWhite);
 
                 if (board.isMoveLegal(move1, dice1) || board.isMoveLegal(move2, dice2)
-                        || board.isMoveLegal(move3, dice2) ||board.isMoveLegal(move4, dice2)) {
+                        || board.isMoveLegal(move3, dice3) ||board.isMoveLegal(move4, dice4)) {
                     return true;
                 }
             } else if (!isWhite && column.peek() instanceof BlackPiece) {
@@ -99,7 +105,7 @@ public abstract class Player {
                 Move move4 = new Move(i, i + dice4.getValue(), isWhite);
 
                 if (board.isMoveLegal(move1, dice1) || board.isMoveLegal(move2, dice2)
-                        || board.isMoveLegal(move3, dice2) ||board.isMoveLegal(move4, dice2)) {
+                        || board.isMoveLegal(move3, dice3) ||board.isMoveLegal(move4, dice4)) {
                     return true;
                 }
             }

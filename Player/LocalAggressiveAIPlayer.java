@@ -77,6 +77,18 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
             }
         }
 
+        ArrayList<Event> captureMoves = new ArrayList<>();
+        captureMoves.addAll(generateCaptureMoves(dice));
+
+        ArrayList<Event> kapiaMoves = new ArrayList<>();
+        kapiaMoves.addAll(generateKapiaMoves(dice));
+
+        if (captureMoves.size() != 0) {
+            return captureMoves.get(0);
+        } else if (kapiaMoves.size() != 0) {
+            return kapiaMoves.get(0);
+        }
+
         return currentBestMove;
     }
 
@@ -97,9 +109,7 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
             result.add(move3);
         } else if (move4 instanceof Revive) {
             result.add(move4);
-        }
-
-        if (move1 != null) {
+        } else if (move1 != null) {
             result.add(move1);
         } else if (move2 != null) {
             result.add(move2);
@@ -107,9 +117,9 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
             result.add(move3);
         } else if (move4 != null) {
             result.add(move4);
+        } else {
+            result.add(new Skip());
         }
-
-        result.add(new Skip());
 
         return result;
     }

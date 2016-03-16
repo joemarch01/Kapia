@@ -55,7 +55,7 @@ public class Main {
         String player1Name;
         String player2Name;
         Player player1;
-        Player player2;
+        Player player2 = null;
 
         System.out.println("Enter your name");
         player1Name = scanner.nextLine();
@@ -72,7 +72,6 @@ public class Main {
         } else if (player2Class.equals("Local")) {
             player2 = new LocalHumanPlayer(player2Name, false);
         } else if (player2Class.equals("Network")) {
-            Socket player2Socket = null;
             String input = "";
 
             while (!input.equals("quit")) {
@@ -81,23 +80,17 @@ public class Main {
                 if (input.equals("call")) {
                     System.out.println("Enter host name");
                     String hostName = scanner.nextLine();
-                    player2Socket = Network.makeCall(hostName);
+                    player2 = Network.makeCall(hostName);
                 } else if (input.equals("host")) {
-                    player2Socket = Network.acceptCall();
+                    player2 = Network.acceptCall();
                 }
 
-                if (player2Socket != null) {
+                if (player2 != null) {
+                    player2.setTag(player2Name);
                     break;
                 }
-
             }
 
-            if (player2Socket != null) {
-                player2 = new NetworkHumanPlayer(player2Name, false, player2Socket);
-            } else {
-                System.out.println("Error establishing connection");
-                return null;
-            }
         } else {
             player2 = new LocalHumanPlayer(player2Name, false);
         }
@@ -107,15 +100,9 @@ public class Main {
     }
 
     public static void main (String[] args) throws Exception {
-        /*Game g = new Game(new LocalHumanPlayer("Jim", true), new LocalAggressiveAIPlayer(false));
-        ResourceManager.load();
-        //g.setClearState();
-        GameWindow gameWindow = new GameWindow(g);
-        g.play();*/
 
         boolean quit = false;
         Scanner scanner = new Scanner(System.in);
-
 
         while (!quit) {
             String input = scanner.nextLine();

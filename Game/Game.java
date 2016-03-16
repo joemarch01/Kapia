@@ -124,22 +124,13 @@ public class Game {
     private void decideOnFirst () {
 
         if (player2 instanceof NetworkHumanPlayer) {
-
-            ((NetworkHumanPlayer) player2).writeToNetwork("Me first");
-            String s = ((NetworkHumanPlayer) player2).readFromNetwork();
-            rollDice();
-
-            if (s == null) {
-                System.out.println("Me first");
+            if (player2.isWhite()) {
+                Player temp = player1;
+                player1 = player2;
+                player2 = temp;
             } else {
-                Player temp = player2;
-                player2 = player1;
-                player1 = temp;
-                player1.setWhite(true);
-                player2.setWhite(false);
-                System.out.println("Other guy first");
+                rollDice();
             }
-            return;
         }
 
         do{
@@ -190,6 +181,7 @@ public class Game {
                 events.add(new Skip());
                 handleEvents(events);
                 gameEvents.addAll(events);
+                useDice();
                 break;
             }
             events = player.fetchNextEvent();

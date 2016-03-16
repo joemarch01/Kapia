@@ -31,8 +31,8 @@ public abstract class LocalAIPlayer extends Player {
                 //Do nothing
             } else if (isWhite && column.peek() instanceof WhitePiece) {
                 capture = new Move(i, i - dice.getValue(), isWhite);
-                if (i - dice.getValue() >= 0 && board.getColumn(i + dice.getValue()).size() == 1
-                        && board.getColumn(i + dice.getValue()).peek() instanceof BlackPiece) {
+                if (i - dice.getValue() >= 0 && board.getColumn(i - dice.getValue()).size() == 1
+                        && board.getColumn(i - dice.getValue()).peek() instanceof BlackPiece) {
                     result.add(capture);
                 }
             } else if (!isWhite && column.peek() instanceof BlackPiece) {
