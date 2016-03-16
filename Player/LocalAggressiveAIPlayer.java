@@ -33,7 +33,7 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
         boolean isCurrentBestTake = false;
         int currentBestDisplacement = (isWhite) ? 23 : 0;
 
-        for (int i = 0; i < Board.SIZE; i++) {
+/*        for (int i = 0; i < Board.SIZE; i++) {
             if (board.getColumn(i).empty()) {
                 //Do nothing
             } else if (board.getColumn(i).peek() instanceof WhitePiece && isWhite) {
@@ -75,21 +75,23 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
                     }
                 }
             }
-        }
+        }*/
 
-        ArrayList<Event> captureMoves = new ArrayList<>();
-        captureMoves.addAll(generateCaptureMoves(dice));
+        ArrayList<Event> legalMoves = generateLegalMoves(dice);
 
-        ArrayList<Event> kapiaMoves = new ArrayList<>();
-        kapiaMoves.addAll(generateKapiaMoves(dice));
+        ArrayList<Event> captureMoves = ofWhichCapture(legalMoves);
+
+        ArrayList<Event> kapiaMoves = ofWhichKapia(legalMoves);
 
         if (captureMoves.size() != 0) {
             return captureMoves.get(0);
         } else if (kapiaMoves.size() != 0) {
             return kapiaMoves.get(0);
+        } else if (legalMoves.size() != 0) {
+            return legalMoves.get(0);
         }
 
-        return currentBestMove;
+        return new Skip();
     }
 
     public ArrayList<Event> fetchNextEvent () {

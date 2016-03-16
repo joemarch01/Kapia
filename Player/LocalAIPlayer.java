@@ -21,6 +21,104 @@ public abstract class LocalAIPlayer extends Player {
         this.dice4 = dice4;
     }
 
+    public ArrayList<Event> generateLegalMoves (Dice dice) {
+        ArrayList<Event> result = new ArrayList<Event>();
+
+        //Check revives
+        if (!board.getWhiteBar().empty() && isWhite()) {
+            Revive revive = new Revive(Board.SIZE - dice.getValue(), isWhite);
+            if (board.isReviveLegal(revive, dice)) {
+                result.add(revive);
+            }
+        } else if (!board.getBlackBar().empty() && !isWhite) {
+            Revive revive = new Revive(dice.getValue() - 1, isWhite);
+            if (board.isReviveLegal(revive, dice)) {
+                result.add(revive);
+            }
+        }
+
+        //Check clears
+        if (isWhite) {
+            for (int i = 0; i < 6; i ++) {
+                Clear clear = new Clear(i, isWhite);
+                if (board.isClearLegal(clear, dice)) {
+                    result.add(clear);
+                }
+            }
+        } else {
+            for (int i = Board.SIZE - 1; i >= Board.SIZE - 5; i --) {
+                Clear clear = new Clear(i, isWhite);
+                if (board.isClearLegal(clear, dice)) {
+                    result.add(clear);
+                }
+            }
+        }
+
+        //Check moves
+        for (int i = 0; i < Board.SIZE; i ++) {
+            Move move = null;
+            if (isWhite()) {
+                move = new Move(i, i - dice.getValue(), isWhite);
+            } else {
+                move = new Move(i, i + dice.getValue(), isWhite);
+            }
+            if (board.isMoveLegal(move, dice)) {
+                result.add(move);
+            }
+        }
+
+        return result;
+    }
+
+    //Function assumes a domain of legal moves
+
+    public ArrayList<Event> ofWhichCapture (ArrayList<Event> superSet) {
+        ArrayList<Event> result = new ArrayList<>();
+
+        for (Event event : superSet) {
+            if (event instanceof Move && board.getColumn(((Move) event).getTo()).size() == 1) {
+                if (isWhite && board.getColumn(((Move) event).getTo()).peek() instanceof BlackPiece) {
+                    result.add(event);
+                } else if (board.getColumn(((Move) event).getTo()).peek() instanceof WhitePiece) {
+                    result.add(event);
+                }
+            } else if (event instanceof Revive && board.getColumn(((Revive) event).getTo()).size() == 1) {
+                if (isWhite && board.getColumn(((Revive) event).getTo()).peek() instanceof BlackPiece) {
+                    result.add(event);
+                } else if (board.getColumn(((Revive) event).getTo()).peek() instanceof WhitePiece) {
+                    result.add(event);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    //Function assumes a domain of legal moves
+
+    public ArrayList<Event> ofWhichKapia (ArrayList<Event> superSet) {
+        ArrayList<Event> result = new ArrayList<>();
+
+        for (Event event : superSet) {
+            if (event instanceof Move && board.getColumn(((Move) event).getTo()).size() == 1
+                    && board.getColumn(((Move) event).getFrom()).size() != 2) {
+                if (isWhite && board.getColumn(((Move) event).getTo()).peek() instanceof WhitePiece) {
+                    result.add(event);
+                } else if (board.getColumn(((Move) event).getTo()).peek() instanceof BlackPiece) {
+                    result.add(event);
+                }
+            } else if (event instanceof Revive && board.getColumn(((Revive) event).getTo()).size() == 1) {
+                if (isWhite && board.getColumn(((Revive) event).getTo()).peek() instanceof WhitePiece) {
+                    result.add(event);
+                } else if (board.getColumn(((Revive) event).getTo()).peek() instanceof BlackPiece) {
+                    result.add(event);
+                }
+            }
+        }
+
+        return result;
+    }
+
     public ArrayList<Event> generateCaptureMoves (Dice dice) {
         ArrayList<Event> result = new ArrayList<Event>();
         for (int i = 0; i < board.SIZE; i ++) {

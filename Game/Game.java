@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
-public class Game {
+public class Game implements Runnable {
     Board board;
     Player player1;
     Player player2;
@@ -222,6 +222,10 @@ public class Game {
 
             rollDice();
         }
+    }
+
+    public void run () {
+        play();
     }
 
     public void setClearState () {

@@ -112,7 +112,7 @@ public class Main {
                 Game game = getGameFromConsole();
                 if (game != null) {
                     GameWindow gameWindow = new GameWindow(game);
-                    game.play();
+                    new Thread(game).start();
                 }
             } else if (input.equals("quit")) {
                 quit = true;

@@ -178,7 +178,8 @@ public class Board{
             dice4.setUsed(true);
         }
 
-        if (board[move.getTo()].isEmpty() || board[move.getTo()].peek().getClass() == board[move.getFrom()].peek().getClass()) {
+        if (board[move.getTo()].isEmpty()
+                || board[move.getTo()].peek().getClass() == board[move.getFrom()].peek().getClass()) {
             board[move.getTo()].add(board[move.getFrom()].pop());
         } else {
             if (move.getWhite()) {
