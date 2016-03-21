@@ -26,13 +26,11 @@ public class MouseEventConstructor {
     }
 
     public static void registerFinishZoneInput () {
-        if (eventConstructed) {
-            //Do nothing
-        } else if (!(currentEvent instanceof Move)) {
-            //Do nothing
-        } else {
-            currentEvent = new Clear(((Move) currentEvent).getFrom(), true);
-            eventConstructed = true;
+        if (!eventConstructed) {
+            if ((currentEvent instanceof Move)) {
+                currentEvent = new Clear(((Move) currentEvent).getFrom(), true);
+                eventConstructed = true;
+            }
         }
     }
 

@@ -11,13 +11,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 
-public class NetworkHumanPlayer extends Player {
+public class NetworkPlayer extends Player {
 
     private BufferedReader inputStream;
     private DataOutputStream outputStream;
+    private Socket socket;
 
-    public NetworkHumanPlayer (String tag, boolean isWhite, Socket socket) {
+    public NetworkPlayer(String tag, boolean isWhite, Socket socket) {
         super(tag, isWhite);
+        socket = socket;
         try {
             inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             outputStream = new DataOutputStream(socket.getOutputStream());
@@ -25,6 +27,14 @@ public class NetworkHumanPlayer extends Player {
 
         }
 
+    }
+
+    public void disconnect () {
+        try {
+            socket.close();
+        } catch (Exception e) {
+
+        }
     }
 
     public void updateGameState (ArrayList<Event> events) {
@@ -97,8 +107,6 @@ public class NetworkHumanPlayer extends Player {
     }
 
     private ArrayList<Event> parseEventString (String line) {
-
-        //Can only do moves for now
 
         String[] diceArgs = null;
         String[] moveArgs = null;

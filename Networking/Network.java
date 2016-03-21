@@ -1,8 +1,7 @@
 package Networking;
 
-import Player.NetworkHumanPlayer;
+import Player.NetworkPlayer;
 
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,9 +9,9 @@ import java.net.Socket;
 
 public class Network {
 
-    public static NetworkHumanPlayer makeCall (String host) {
+    public static NetworkPlayer makeCall (String host) {
         Socket call = null;
-        NetworkHumanPlayer result = null;
+        NetworkPlayer result = null;
 
         try {
             call = new Socket(host, 8000);
@@ -29,13 +28,13 @@ public class Network {
         try {
             output = new DataOutputStream(call.getOutputStream());
             if (goFirst) {
-                //Make an illegal move to start, then get legal move from player in main loop
+                //Make an illegal move to start, then get legal move from player in game play loop
                 //If go first, then the network player must go second
-                result = new NetworkHumanPlayer(host, false, call);
-                output.writeBytes("0-0(-1|-1);\n");
+                result = new NetworkPlayer(host, false, call);
+                output.writeBytes("0-0(-1|-1),(-1|-1);\n");
             } else {
                 //As per the protocol
-                result = new NetworkHumanPlayer(host, true, call);
+                result = new NetworkPlayer(host, true, call);
                 output.writeBytes("Pass\n");
             }
         } catch (Exception e) {
@@ -47,10 +46,10 @@ public class Network {
         return result;
     }
 
-    public static NetworkHumanPlayer acceptCall () {
+    public static NetworkPlayer acceptCall () {
         ServerSocket listen;
         Socket connection = null;
-        NetworkHumanPlayer result = null;
+        NetworkPlayer result = null;
 
         try {
             listen = new ServerSocket(8000);
@@ -69,9 +68,9 @@ public class Network {
                 //Error with network communication
                 throw new Exception();
             } else if (networkText.equals("Pass")){
-                result = new NetworkHumanPlayer(connection.getLocalAddress().getHostName(), false, connection);
+                result = new NetworkPlayer(connection.getLocalAddress().getHostName(), false, connection);
             } else {
-                result = new NetworkHumanPlayer(connection.getLocalAddress().getHostName(), true, connection);
+                result = new NetworkPlayer(connection.getLocalAddress().getHostName(), true, connection);
             }
         } catch (Exception e) {
             System.out.println("Error confirming the network connection");
@@ -80,7 +79,7 @@ public class Network {
         return result;
     }
 
-    public static int handshakeWithPlayer (NetworkHumanPlayer player) {
+    public static int handshakeWithPlayer (NetworkPlayer player) {
         String feedback = player.readFromNetwork();
         if (feedback == null) {
             //Error with connection

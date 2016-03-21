@@ -86,27 +86,27 @@ public abstract class Player {
     public boolean isMovePossible (Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
         for (int i = 0; i < board.SIZE; i ++) {
             Stack<Piece> column = board.getColumn(i);
-            if (column.empty()) {
-                //Do nothing
-            } else if (isWhite && column.peek() instanceof WhitePiece) {
-                Move move1 = new Move(i, i - dice1.getValue(), isWhite);
-                Move move2 = new Move(i, i - dice2.getValue(), isWhite);
-                Move move3 = new Move(i, i - dice3.getValue(), isWhite);
-                Move move4 = new Move(i, i - dice4.getValue(), isWhite);
+            if (!column.empty()) {
+                if (isWhite && column.peek() instanceof WhitePiece) {
+                    Move move1 = new Move(i, i - dice1.getValue(), isWhite);
+                    Move move2 = new Move(i, i - dice2.getValue(), isWhite);
+                    Move move3 = new Move(i, i - dice3.getValue(), isWhite);
+                    Move move4 = new Move(i, i - dice4.getValue(), isWhite);
 
-                if (board.isMoveLegal(move1, dice1) || board.isMoveLegal(move2, dice2)
-                        || board.isMoveLegal(move3, dice3) ||board.isMoveLegal(move4, dice4)) {
-                    return true;
-                }
-            } else if (!isWhite && column.peek() instanceof BlackPiece) {
-                Move move1 = new Move(i, i + dice1.getValue(), isWhite);
-                Move move2 = new Move(i, i + dice2.getValue(), isWhite);
-                Move move3 = new Move(i, i + dice3.getValue(), isWhite);
-                Move move4 = new Move(i, i + dice4.getValue(), isWhite);
+                    if (board.isMoveLegal(move1, dice1) || board.isMoveLegal(move2, dice2)
+                            || board.isMoveLegal(move3, dice3) ||board.isMoveLegal(move4, dice4)) {
+                        return true;
+                    }
+                } else if (!isWhite && column.peek() instanceof BlackPiece) {
+                    Move move1 = new Move(i, i + dice1.getValue(), isWhite);
+                    Move move2 = new Move(i, i + dice2.getValue(), isWhite);
+                    Move move3 = new Move(i, i + dice3.getValue(), isWhite);
+                    Move move4 = new Move(i, i + dice4.getValue(), isWhite);
 
-                if (board.isMoveLegal(move1, dice1) || board.isMoveLegal(move2, dice2)
-                        || board.isMoveLegal(move3, dice3) ||board.isMoveLegal(move4, dice4)) {
-                    return true;
+                    if (board.isMoveLegal(move1, dice1) || board.isMoveLegal(move2, dice2)
+                            || board.isMoveLegal(move3, dice3) ||board.isMoveLegal(move4, dice4)) {
+                        return true;
+                    }
                 }
             }
         }

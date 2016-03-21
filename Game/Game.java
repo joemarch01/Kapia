@@ -1,12 +1,13 @@
 package Game;
 import Board.*;
 import Graphics.GameWindow;
+import Graphics.MouseEventConstructor;
+import Networking.Network;
 import Player.*;
 import Event.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.Stack;
 
 public class Game implements Runnable {
     Board board;
@@ -56,8 +57,18 @@ public class Game implements Runnable {
         if (event instanceof Move) {
             if (board.move((Move)event, dice1, dice2, dice3, dice4)) {
                 eventStack.add(event);
+                System.out.println(event.toString());
             } else {
                 System.out.println(currentPlayer.getTag() + " made an illegal move");
+                if (currentPlayer instanceof NetworkPlayer) {
+                    ((NetworkPlayer) currentPlayer).writeToNetwork("Quit");
+                    System.out.println("Cheating detected from network player, exiting now");
+                    JOptionPane error = new JOptionPane(JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(error,"Cheating detected from network player, exiting now");
+                    handleEvent(new Quit());
+                    exit();
+                }
+
             }
         } else if (event instanceof Quit) {
             finished = true;
@@ -68,6 +79,7 @@ public class Game implements Runnable {
         } else if (event instanceof Clear) {
             if (board.clear((Clear)event, dice1, dice2, dice3, dice4)) {
                 eventStack.add(event);
+                System.out.println(event.toString());
                 if(board.isGameWon()){
                     System.out.println(currentPlayer.getTag() + " wins");
                     handleEvent(new Quit());
@@ -76,6 +88,7 @@ public class Game implements Runnable {
         } else if (event instanceof Revive) {
             if (board.revive((Revive)event, dice1, dice2, dice3, dice4)) {
                 eventStack.add(event);
+                System.out.println(event.toString());
             }
         } else if (event instanceof Skip) {
             eventStack.add(event);
@@ -123,7 +136,7 @@ public class Game implements Runnable {
 
     private void decideOnFirst () {
 
-        if (player2 instanceof NetworkHumanPlayer) {
+        if (player2 instanceof NetworkPlayer) {
             if (player2.isWhite()) {
                 Player temp = player1;
                 player1 = player2;
@@ -131,6 +144,7 @@ public class Game implements Runnable {
             } else {
                 rollDice();
             }
+            return;
         }
 
         do{
@@ -157,10 +171,12 @@ public class Game implements Runnable {
         ArrayList<Event> events = new ArrayList<Event>();
         ArrayList<Event> gameEvents = new ArrayList<Event>();
 
+        currentPlayer = player;
+
         if (player instanceof LocalAIPlayer) {
             ((LocalAIPlayer) player).setBoard(board);
             ((LocalAIPlayer) player).setDice(dice1, dice2, dice3, dice4);
-        } else if (player instanceof NetworkHumanPlayer) {
+        } else if (player instanceof NetworkPlayer) {
             useDice();
             events = player.fetchNextEvent();
             handleEvents(events);
@@ -226,6 +242,16 @@ public class Game implements Runnable {
 
     public void run () {
         play();
+    }
+
+    private void exit () {
+        if (player1 instanceof NetworkPlayer) {
+            ((NetworkPlayer) player1).disconnect();
+        }
+        if (player2 instanceof NetworkPlayer) {
+            ((NetworkPlayer) player2).disconnect();
+        }
+        window.dispose();
     }
 
     public void setClearState () {

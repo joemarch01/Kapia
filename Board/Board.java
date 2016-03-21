@@ -153,6 +153,10 @@ public class Board{
             return false;
         } else if (board[move.getTo()].size() > 1 && board[move.getTo()].peek().getClass() != board[move.getFrom()].peek().getClass()) {
             return false;
+        } else if (move.getWhite() && !(board[move.getFrom()].peek() instanceof WhitePiece)) {
+            return false;
+        } else if (!move.getWhite() && !(board[move.getFrom()].peek() instanceof BlackPiece)) {
+            return false;
         }
         return true;
     }
@@ -183,9 +187,9 @@ public class Board{
             board[move.getTo()].add(board[move.getFrom()].pop());
         } else {
             if (move.getWhite()) {
-                blackBar.push((BlackPiece)board[move.getTo()].pop());
+                blackBar.push(board[move.getTo()].pop());
             } else {
-                whiteBar.push((WhitePiece)board[move.getTo()].pop());
+                whiteBar.push(board[move.getTo()].pop());
             }
             board[move.getTo()].add(board[move.getFrom()].pop());
         }
@@ -470,5 +474,25 @@ public class Board{
 
     public boolean isGameWon () {
         return (numberOfBlackPieces == 0) || (numberOfWhitePieces == 0);
+    }
+
+    public Board clone () {
+        Board clone = new Board();
+        clone.numberOfBlackPieces = this.numberOfBlackPieces;
+        clone.numberOfWhitePieces = this.numberOfWhitePieces;
+        for (Piece p : whiteBar) {
+            clone.whiteBar.add(p);
+        }
+        for (Piece p : blackBar) {
+            clone.blackBar.add(p);
+        }
+        clone.board = (Stack<Piece>[]) new Stack [SIZE];
+        for (int i = 0; i < SIZE; i ++) {
+            clone.board[i] = new Stack<>();
+            for (Piece p : this.board[i]) {
+                clone.board[i].add(p);
+            }
+        }
+        return clone;
     }
 }

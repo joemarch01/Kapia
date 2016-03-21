@@ -5,6 +5,8 @@ import Event.*;
 import Game.Dice;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Stack;
 
 public abstract class LocalAIPlayer extends Player {
@@ -46,7 +48,7 @@ public abstract class LocalAIPlayer extends Player {
                 }
             }
         } else {
-            for (int i = Board.SIZE - 1; i >= Board.SIZE - 5; i --) {
+            for (int i = Board.SIZE - 1; i >= Board.SIZE - 6; i --) {
                 Clear clear = new Clear(i, isWhite);
                 if (board.isClearLegal(clear, dice)) {
                     result.add(clear);
@@ -57,7 +59,7 @@ public abstract class LocalAIPlayer extends Player {
         //Check moves
         for (int i = 0; i < Board.SIZE; i ++) {
             Move move = null;
-            if (isWhite()) {
+            if (isWhite) {
                 move = new Move(i, i - dice.getValue(), isWhite);
             } else {
                 move = new Move(i, i + dice.getValue(), isWhite);
@@ -70,6 +72,39 @@ public abstract class LocalAIPlayer extends Player {
         return result;
     }
 
+    public ArrayList<Event> generateLegalMoves (Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
+        ArrayList<Event> result = new ArrayList<>();
+        result.addAll(generateLegalMoves(dice1));
+        result.addAll(generateLegalMoves(dice2));
+        result.addAll(generateLegalMoves(dice3));
+        result.addAll(generateLegalMoves(dice4));
+
+
+        //Move to separate function
+
+/*        //Sort by closest to home zone
+        result.sort((Event a, Event b) ->
+            {
+                int x = 0, y = 0;
+                if (a instanceof Move) {
+                   x = ((Move)a).getTo();
+                } else if (a instanceof Revive) {
+                     x = ((Revive)a).getTo();
+                }
+                if (b instanceof Move) {
+                    y = ((Move)a).getTo();
+                } else if (b instanceof Revive) {
+                    y = ((Revive)a).getTo();
+                }
+                if (isWhite) {
+                    return x > y ? 0 : 1;
+                } else {
+                    return x < y ? 0 : 1;
+                }
+            });*/
+        return result;
+    }
+
     //Function assumes a domain of legal moves
 
     public ArrayList<Event> ofWhichCapture (ArrayList<Event> superSet) {
@@ -79,13 +114,13 @@ public abstract class LocalAIPlayer extends Player {
             if (event instanceof Move && board.getColumn(((Move) event).getTo()).size() == 1) {
                 if (isWhite && board.getColumn(((Move) event).getTo()).peek() instanceof BlackPiece) {
                     result.add(event);
-                } else if (board.getColumn(((Move) event).getTo()).peek() instanceof WhitePiece) {
+                } else if (!isWhite && board.getColumn(((Move) event).getTo()).peek() instanceof WhitePiece) {
                     result.add(event);
                 }
             } else if (event instanceof Revive && board.getColumn(((Revive) event).getTo()).size() == 1) {
                 if (isWhite && board.getColumn(((Revive) event).getTo()).peek() instanceof BlackPiece) {
                     result.add(event);
-                } else if (board.getColumn(((Revive) event).getTo()).peek() instanceof WhitePiece) {
+                } else if (!isWhite && board.getColumn(((Revive) event).getTo()).peek() instanceof WhitePiece) {
                     result.add(event);
                 }
             }
@@ -119,77 +154,90 @@ public abstract class LocalAIPlayer extends Player {
         return result;
     }
 
-    public ArrayList<Event> generateCaptureMoves (Dice dice) {
-        ArrayList<Event> result = new ArrayList<Event>();
-        for (int i = 0; i < board.SIZE; i ++) {
-            Stack<Piece> column = board.getColumn(i);
-            Move capture;
+    public void orderBySafety (ArrayList<Event> list) {
+        LocalAIPlayer player2 = new LocalAggressiveAIPlayer(!isWhite);
+        HashMap<Event, Integer> rankings = new HashMap<>();
+        Dice dice1 = new Dice();
+        Dice dice2 = new Dice();
+        Dice dice3 = new Dice();
+        Dice dice4 = new Dice();
+        for (Event e : list) {
+            int safetyRank = 0;
+            for (int i = 1; i <= 6; i ++) {
+                for (int j = 1; j <= 6; j ++) {
+                    Board tempBoard = board.clone();
+                    dice1.setValue(i);
+                    dice1.setUsed(false);
+                    dice2.setValue(j);
+                    dice2.setUsed(false);
+                    if (j == i) {
+                        dice3.setValue(i);
+                        dice3.setUsed(false);
+                        dice4.setValue(i);
+                        dice4.setUsed(false);
+                    } else {
+                        dice3.setUsed(true);
+                        dice4.setUsed(true);
+                    }
 
-            if (column.empty()) {
-                //Do nothing
-            } else if (isWhite && column.peek() instanceof WhitePiece) {
-                capture = new Move(i, i - dice.getValue(), isWhite);
-                if (i - dice.getValue() >= 0 && board.getColumn(i - dice.getValue()).size() == 1
-                        && board.getColumn(i - dice.getValue()).peek() instanceof BlackPiece) {
-                    result.add(capture);
-                }
-            } else if (!isWhite && column.peek() instanceof BlackPiece) {
-                capture = new Move(i, i + dice.getValue(), isWhite);
-                if (i + dice.getValue() < board.SIZE && board.getColumn(i + dice.getValue()).size() == 1
-                        && board.getColumn(i + dice.getValue()).peek() instanceof BlackPiece) {
-                    result.add(capture);
+                    player2.setBoard(tempBoard);
+
+                    if (e instanceof Move) {
+                        tempBoard.move(((Move) e), dice1, dice2, dice3, dice4);
+                    } else if (e instanceof Revive) {
+                        tempBoard.revive(((Revive) e), dice1, dice2, dice3, dice4);
+                    } else if (e instanceof Clear) {
+                        tempBoard.clear(((Clear) e), dice1, dice2, dice3, dice4);
+                    }
+
+                    ArrayList<Event> legalMoves = player2.generateLegalMoves(dice1, dice2, dice3, dice4);
+                    ArrayList<Event> captureMoves = player2.ofWhichCapture(legalMoves);
+
+                    safetyRank += captureMoves.size();
+
+                    dice1.setUsed(true);
+                    dice2.setUsed(true);
+                    dice3.setUsed(true);
+                    dice4.setUsed(true);
                 }
             }
+            rankings.put(e, safetyRank);
         }
-
-        //Check if any revives can capture [FIX]
-/*        if (isWhite && !board.getWhiteBar().empty()) {
-            if (board.getColumn(dice.getValue() - 1).size() == 1 && board.getColumn(dice.getValue() - 1).peek() instanceof BlackPiece) {
-                result.add(new Revive(dice.getValue() - 1, isWhite));
-            }
-        } else if (!isWhite && !board.getBlackBar().empty()) {
-            if (board.getColumn(board.SIZE - dice.getValue()).size() == 1 && board.getColumn(board.SIZE - dice.getValue()).peek() instanceof WhitePiece) {
-                result.add(new Revive(board.SIZE - dice.getValue(), isWhite));
-            }
-        }*/
-
-        return result;
+        list.sort((Event a, Event b) -> {
+            return rankings.get(a) > rankings.get(b) ? 1 : -1;
+        });
+        return;
     }
 
-    //A move is said to be a kapia if it moves a piece on it's own onto a stack of one or more pieces, thus preventing potential captures
-    //This method returns a list of any such moves
-
-    public ArrayList<Event> generateKapiaMoves (Dice dice) {
-        ArrayList<Event> result = new ArrayList<Event>();
-        for (int i = 0; i < Board.SIZE; i ++) {
-            Stack<Piece> column = board.getColumn(i);
-
-             if (isWhite && column.size() == 1 && column.peek() instanceof WhitePiece) {
-                Move move = new Move(i, i - dice.getValue(), isWhite);
-                 if (board.isMoveLegal(move, dice) && board.getColumn(i - dice.getValue()).size() >= 1
-                         && board.getColumn(i - dice.getValue()).peek() instanceof WhitePiece) {
-                     result.add(move);
-                 }
-             } else if (!isWhite && column.size() == 1 && column.peek() instanceof BlackPiece) {
-                 Move move = new Move(i, i + dice.getValue(), isWhite);
-                 if (board.isMoveLegal(move, dice) && board.getColumn(i + dice.getValue()).size() >= 1
-                         && board.getColumn(i + dice.getValue()).peek() instanceof BlackPiece) {
-                     result.add(move);
-                 }
-             }
-        }
-
-        //[FIX]
-/*        if (isWhite && !board.getWhiteBar().empty()) {
-            if (board.getColumn(dice.getValue() - 1).size() >= 1 && board.getColumn(dice.getValue() - 1).peek() instanceof WhitePiece) {
-                result.add(new Revive(dice.getValue() - 1, isWhite));
+    public void orderByDisplacement (ArrayList<Event> list) {
+        list.sort((Event a, Event b) ->
+        {
+            int x = 0, y = 0;
+            if (a instanceof Move) {
+                x = ((Move)a).getTo();
+            } else if (a instanceof Revive) {
+                x = ((Revive)a).getTo();
             }
-        } else if (!isWhite && !board.getBlackBar().empty()) {
-            if (board.getColumn(board.SIZE - dice.getValue()).size() >= 1 && board.getColumn(board.SIZE - dice.getValue()).peek() instanceof BlackPiece) {
-                result.add(new Revive(board.SIZE - dice.getValue(), isWhite));
+            if (b instanceof Move) {
+                y = ((Move)a).getTo();
+            } else if (b instanceof Revive) {
+                y = ((Revive)a).getTo();
             }
-        }*/
-
-        return result;
+            if (isWhite) {
+                return x > y ? -1 : 1;
+            } else {
+                return x < y ? -1 : 1;
+            }
+        });
     }
+
+    public Event containsEventType (ArrayList<Event> list, Class type) {
+        for (Event e: list) {
+            if (e.getClass() == type) {
+                return e;
+            }
+        }
+        return null;
+    }
+
 }

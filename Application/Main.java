@@ -7,11 +7,8 @@ import Graphics.ResourceManager;
 import Networking.Network;
 import Player.LocalAggressiveAIPlayer;
 import Player.LocalHumanPlayer;
-import Player.NetworkHumanPlayer;
 import Player.Player;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
