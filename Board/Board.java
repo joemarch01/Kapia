@@ -216,7 +216,7 @@ public class Board{
                 }
             }
 
-            if (total != numberOfWhitePieces) {
+            if (total < numberOfWhitePieces) {
                 return false;
             }
 
@@ -244,7 +244,7 @@ public class Board{
                 }
             }
 
-            if (total != numberOfBlackPieces) {
+            if (total < numberOfBlackPieces) {
                 return false;
             }
 
@@ -362,7 +362,7 @@ public class Board{
             }
         }
 
-        return true;
+        return false;
     }
 
     public boolean isReviveLegal (Revive revive, Dice dice) {

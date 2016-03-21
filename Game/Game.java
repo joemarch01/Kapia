@@ -36,6 +36,7 @@ public class Game implements Runnable {
         dice4 = new Dice();
         dice3.setUsed(true);
         dice4.setUsed(true);
+        window = new GameWindow(this);
     }
 
     public Board getBoard () {
@@ -180,15 +181,14 @@ public class Game implements Runnable {
             useDice();
             events = player.fetchNextEvent();
             handleEvents(events);
-            return;
         }
 
-        gameEvents.add(new SetDice(1, dice1.getValue()));
-        gameEvents.add(new SetDice(2, dice2.getValue()));
+        eventStack.add(new SetDice(1, dice1.getValue()));
+        eventStack.add(new SetDice(2, dice2.getValue()));
 
         if (!dice3.used()) {
-            gameEvents.add(new SetDice(3, dice3.getValue()));
-            gameEvents.add(new SetDice(4, dice4.getValue()));
+            eventStack.add(new SetDice(3, dice3.getValue()));
+            eventStack.add(new SetDice(4, dice4.getValue()));
         }
 
         while (!(dice1.used() && dice2.used() && dice3.used() && dice4.used()) && !finished) {
@@ -207,10 +207,12 @@ public class Game implements Runnable {
         gameEvents.addAll(events);
 
         if (player == player1) {
-            player2.updateGameState(gameEvents);
+            player2.updateGameState(eventStack);
         } else {
-            player1.updateGameState(gameEvents);
+            player1.updateGameState(eventStack);
         }
+
+        eventStack.clear();
     }
 
     public void play () {

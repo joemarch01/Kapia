@@ -18,12 +18,12 @@ public class GameWindow extends JFrame {
     public GameWindow (Game game) {
         this.game = game;
         this.setVisible(true);
-        this.setBounds(0, 0, WIDTH + 200, HEIGHT + 100);
+        this.setBounds(0, 0, WIDTH + 200, HEIGHT + 120);
+        this.setResizable(false);
         game.setWindow(this);
         boardPanel = new BoardPanel(new ImageIcon(ResourceManager.getBoardImage()), game);
         getContentPane().add(boardPanel);
     }
-
 
 
 }

@@ -111,6 +111,13 @@ public class NetworkPlayer extends Player {
         String[] diceArgs = null;
         String[] moveArgs = null;
 
+        ArrayList<Event> result = new ArrayList<Event>();
+
+        if (line.equals("Quit")) {
+            result.add(new Quit());
+            return result;
+        }
+
         try {
             diceArgs = line.substring(0, line.lastIndexOf(':')).split("-");
             moveArgs = line.substring(line.lastIndexOf(":") + 1).split(",");
@@ -120,7 +127,7 @@ public class NetworkPlayer extends Player {
         }
 
 
-        ArrayList<Event> result = new ArrayList<Event>();
+
 
         for (int i = 0; i < diceArgs.length; i ++) {
             result.add(new SetDice(i + 1, Integer.valueOf(diceArgs[i])));

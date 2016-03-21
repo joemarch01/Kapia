@@ -9,12 +9,14 @@ import java.net.Socket;
 
 public class Network {
 
+    private static int currentSocket = 8000;
+
     public static NetworkPlayer makeCall (String host) {
         Socket call = null;
         NetworkPlayer result = null;
 
         try {
-            call = new Socket(host, 8000);
+            call = new Socket(host, currentSocket ++);
             call.setSoTimeout(100000);
             call.setTcpNoDelay(true);
 
@@ -52,7 +54,7 @@ public class Network {
         NetworkPlayer result = null;
 
         try {
-            listen = new ServerSocket(8000);
+            listen = new ServerSocket(currentSocket ++);
             listen.setSoTimeout(100000);
             connection = listen.accept();
             connection.setTcpNoDelay(true);
