@@ -4,18 +4,21 @@ import Board.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Stack;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ColumnContainer extends JPanel {
+public class ColumnContainer extends JPanel implements MouseListener {
 
     int column;
     boolean clicked;
     Stack<Piece> stack;
+    MouseEventConstructor eventConstructor;
 
-    ColumnContainer(int column, Stack<Piece> stack){
-        super();
+    ColumnContainer(MouseEventConstructor eventConstructor, int column, Stack<Piece> stack){
+        this.eventConstructor = eventConstructor;
         if (column < Board.SIZE / 2) {
             setBounds((int)(GameWindow.WIDTH - GameWindow.WIDTH*((column + 1) / 12.0)) + 100, GameWindow.HEIGHT/2, GameWindow.WIDTH/12, GameWindow.HEIGHT/2);
         } else {
@@ -25,7 +28,7 @@ public class ColumnContainer extends JPanel {
         this.stack = stack;
         this.column = column;
         setOpaque(false);
-        addMouseListener(new ColumnInputListener(column));
+        addMouseListener(this);
     }
 
     public void paintComponent (Graphics g) {
@@ -46,4 +49,28 @@ public class ColumnContainer extends JPanel {
         }
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        eventConstructor.registerColumnInput(column);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }

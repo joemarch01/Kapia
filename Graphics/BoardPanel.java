@@ -8,7 +8,9 @@ import java.awt.*;
 
 public class BoardPanel extends JLabel {
 
-    Board board;
+    private Board board;
+    private FinishZoneContainer whiteFinishZone;
+    private FinishZoneContainer blackFinishZone;
 
     public BoardPanel (ImageIcon imageIcon, Game game) {
 
@@ -18,17 +20,22 @@ public class BoardPanel extends JLabel {
         this.board = game.getBoard();
 
         for (int i = 0; i < Board.SIZE; i ++) {
-            add(new ColumnContainer(i, board.getColumn(i)));
+            add(new ColumnContainer(game.getEventConstructor(), i, board.getColumn(i)));
         }
 
-        add(new BarContainer(board.getWhiteBar(), true));
-        add(new BarContainer(board.getBlackBar(), false));
-        add(new FinishZoneContainer(true));
-        add(new FinishZoneContainer(false));
+        whiteFinishZone = new FinishZoneContainer(game.getEventConstructor(), true);
+        blackFinishZone = new FinishZoneContainer(game.getEventConstructor(), false);
+
+        add(new BarContainer(game.getEventConstructor(), board.getWhiteBar(), true));
+        add(new BarContainer(game.getEventConstructor(), board.getBlackBar(), false));
+        add(whiteFinishZone);
+        add(blackFinishZone);
         add(new BottomContainer(game));
     }
 
     public void paintComponent (Graphics g) {
+        whiteFinishZone.setStackSize(15 - board.numberOfWhitePieces);
+        blackFinishZone.setStackSize(15 - board.numberOfBlackPieces);
         g.drawImage(ResourceManager.getBoardImage(), 100, 0, GameWindow.WIDTH, GameWindow.HEIGHT, null);
     }
 

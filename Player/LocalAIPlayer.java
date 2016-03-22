@@ -79,29 +79,6 @@ public abstract class LocalAIPlayer extends Player {
         result.addAll(generateLegalMoves(dice3));
         result.addAll(generateLegalMoves(dice4));
 
-
-        //Move to separate function
-
-/*        //Sort by closest to home zone
-        result.sort((Event a, Event b) ->
-            {
-                int x = 0, y = 0;
-                if (a instanceof Move) {
-                   x = ((Move)a).getTo();
-                } else if (a instanceof Revive) {
-                     x = ((Revive)a).getTo();
-                }
-                if (b instanceof Move) {
-                    y = ((Move)a).getTo();
-                } else if (b instanceof Revive) {
-                    y = ((Revive)a).getTo();
-                }
-                if (isWhite) {
-                    return x > y ? 0 : 1;
-                } else {
-                    return x < y ? 0 : 1;
-                }
-            });*/
         return result;
     }
 

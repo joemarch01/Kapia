@@ -21,6 +21,7 @@ public class Game implements Runnable {
     public Dice dice3;
     public Dice dice4;
     GameWindow window;
+    MouseEventConstructor eventConstructor;
 
     public Game (Player player1, Player player2) {
         this.player1 = player1;
@@ -28,8 +29,18 @@ public class Game implements Runnable {
         board = new Board();
         eventStack = new ArrayList<Event>();
         this.finished = false;
+        eventConstructor = new MouseEventConstructor();
         player1.setBoard(board);
         player2.setBoard(board);
+
+        if (player1 instanceof LocalHumanPlayer) {
+            ((LocalHumanPlayer) player1).setEventConstructor(eventConstructor);
+        }
+
+        if (player2 instanceof LocalHumanPlayer) {
+            ((LocalHumanPlayer) player2).setEventConstructor(eventConstructor);
+        }
+
         dice1 = new Dice();
         dice2 = new Dice();
         dice3 = new Dice();
@@ -37,6 +48,11 @@ public class Game implements Runnable {
         dice3.setUsed(true);
         dice4.setUsed(true);
         window = new GameWindow(this);
+
+    }
+
+    public MouseEventConstructor getEventConstructor () {
+        return eventConstructor;
     }
 
     public Board getBoard () {
@@ -240,13 +256,15 @@ public class Game implements Runnable {
 
             rollDice();
         }
+
+        exit();
     }
 
     public void run () {
         play();
     }
 
-    private void exit () {
+    public void exit () {
         if (player1 instanceof NetworkPlayer) {
             ((NetworkPlayer) player1).disconnect();
         }
@@ -254,6 +272,7 @@ public class Game implements Runnable {
             ((NetworkPlayer) player2).disconnect();
         }
         window.dispose();
+        System.out.println("Game finished");
     }
 
     public void setClearState () {

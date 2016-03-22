@@ -3,10 +3,16 @@ package Graphics;
 import Event.*;
 
 public class MouseEventConstructor {
-    private static Event currentEvent = new Event();
-    private static boolean eventConstructed = false;
+    private Event currentEvent;
+    private boolean eventConstructed;
 
-    public static void registerColumnInput (int column) {
+
+    public MouseEventConstructor () {
+        currentEvent = new Event();
+        eventConstructed = false;
+    }
+
+    public void registerColumnInput (int column) {
          if (currentEvent instanceof Move && !eventConstructed) {
              ((Move) currentEvent).setTo(column);
             eventConstructed = true;
@@ -20,12 +26,12 @@ public class MouseEventConstructor {
         }
     }
 
-    public static void registerBarInput () {
+    public void registerBarInput () {
         currentEvent = new Revive(0, true);
         eventConstructed = false;
     }
 
-    public static void registerFinishZoneInput () {
+    public void registerFinishZoneInput () {
         if (!eventConstructed) {
             if ((currentEvent instanceof Move)) {
                 currentEvent = new Clear(((Move) currentEvent).getFrom(), true);
@@ -34,8 +40,8 @@ public class MouseEventConstructor {
         }
     }
 
-    public static Event nextEvent () {
-        if (!eventConstructed) {
+    public Event nextEvent () {
+        if (eventConstructed == false) {
             return null;
         } else {
             eventConstructed = false;
@@ -44,4 +50,5 @@ public class MouseEventConstructor {
             return temp;
         }
     }
+
 }

@@ -3,14 +3,21 @@ package Player;
 
 import Event.*;
 import Graphics.MouseEventConstructor;
+import org.w3c.dom.events.EventListener;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class LocalHumanPlayer extends Player {
 
+    private MouseEventConstructor eventConstructor;
+
     public LocalHumanPlayer (String tag, boolean isWhite) {
         super(tag, isWhite);
+    }
+
+    public void setEventConstructor (MouseEventConstructor eventConstructor) {
+        this.eventConstructor = eventConstructor;
     }
 
     public ArrayList<Event> fetchNextEvent () {
@@ -25,7 +32,7 @@ public class LocalHumanPlayer extends Player {
                 System.out.println(e.getMessage());
             }
 
-            result = MouseEventConstructor.nextEvent();
+            result = eventConstructor.nextEvent();
         } while (result == null);
 
         if (result instanceof Move) {
@@ -41,7 +48,5 @@ public class LocalHumanPlayer extends Player {
         resultSet.add(result);
 
         return resultSet;
-
-        //return new Event();
     }
 }

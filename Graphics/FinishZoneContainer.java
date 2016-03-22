@@ -3,24 +3,28 @@ package Graphics;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class FinishZoneContainer extends JPanel {
+public class FinishZoneContainer extends JPanel implements MouseListener {
     boolean isWhite;
     int stackSize;
+    MouseEventConstructor eventConstructor;
 
-    public FinishZoneContainer (boolean isWhite) {
+    public FinishZoneContainer (MouseEventConstructor eventConstructor, boolean isWhite) {
         this.isWhite = isWhite;
         this.stackSize = 0;
-        addMouseListener(new FinishZoneInputListener());
+        this.eventConstructor = eventConstructor;
         if (isWhite) {
             setBounds(GameWindow.WIDTH + 100, 0, 100, GameWindow.HEIGHT/2);
         } else {
             setBounds(GameWindow.WIDTH + 100, GameWindow.HEIGHT / 2, 100, GameWindow.HEIGHT/2);
         }
+        addMouseListener(this);
     }
 
-    public void incrementStack () {
-        stackSize ++;
+    public void setStackSize (int stackSize) {
+        this.stackSize = stackSize;
     }
 
     public void paintComponent (Graphics g) {
@@ -32,5 +36,30 @@ public class FinishZoneContainer extends JPanel {
             g.setColor(Color.black);
             g.fillRect(0,0,10000,10000);
         }*/
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        eventConstructor.registerFinishZoneInput();
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

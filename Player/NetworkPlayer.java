@@ -2,6 +2,7 @@ package Player;
 
 import Event.*;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class NetworkPlayer extends Player {
 
     public NetworkPlayer(String tag, boolean isWhite, Socket socket) {
         super(tag, isWhite);
-        socket = socket;
+        this.socket = socket;
         try {
             inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             outputStream = new DataOutputStream(socket.getOutputStream());
@@ -31,6 +32,7 @@ public class NetworkPlayer extends Player {
 
     public void disconnect () {
         try {
+            writeToNetwork("Quit");
             socket.close();
         } catch (Exception e) {
 
@@ -162,7 +164,7 @@ public class NetworkPlayer extends Player {
 
     public ArrayList<Event> fetchNextEvent () {
         String input = readFromNetwork();
-        while (input == null || input.equals("Me first")) {
+        while (input == null) {
             input = readFromNetwork();
         }
         System.out.println("Network Events : " + input);

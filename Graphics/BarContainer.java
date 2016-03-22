@@ -2,21 +2,25 @@ package Graphics;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Stack;
 import Board.*;
 
 
-public class BarContainer extends JPanel {
+public class BarContainer extends JPanel implements MouseListener {
     Stack<Piece> stack;
+    private MouseEventConstructor eventConstructor;
 
-    public BarContainer (Stack<Piece> stack, boolean isWhite) {
+    public BarContainer (MouseEventConstructor eventConstructor, Stack<Piece> stack, boolean isWhite) {
         this.stack = stack;
+        this.eventConstructor = eventConstructor;
         if (isWhite) {
-            setBounds(0, 0, 100, GameWindow.HEIGHT/2);
+            setBounds(0, 0, 100, GameWindow.HEIGHT / 2);
         } else {
-            setBounds(0, GameWindow.HEIGHT/2, 100, GameWindow.HEIGHT/2);
+            setBounds(0, GameWindow.HEIGHT / 2, 100, GameWindow.HEIGHT / 2);
         }
-        addMouseListener(new BarInputListener());
+        addMouseListener(this);
     }
 
     public void paintComponent (Graphics g) {
@@ -28,5 +32,30 @@ public class BarContainer extends JPanel {
                 g.drawImage(ResourceManager.getBlackPieceImage(), 25, i*25 + 10, 50, 50, null);
             }
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        eventConstructor.registerBarInput();
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
