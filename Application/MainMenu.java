@@ -4,13 +4,18 @@
  * and open the template in the editor.
  */
 
+package Application;
+
 import Game.Game;
 import Graphics.GameWindow;
 import Graphics.ResourceManager;
 import Networking.Network;
+import Networking.NetworkListener;
 import Player.*;
 
 import javax.swing.*;
+
+
 
 /**
  *
@@ -21,6 +26,13 @@ public class MainMenu extends javax.swing.JFrame {
     /**
      * Creates new form MainMenu
      */
+
+    private static Player incomingNetworkPlayer;
+
+    public static void registerCall (Player player) {
+        incomingNetworkPlayer = player;
+    }
+
     public MainMenu() {
         initComponents();
         player1AIOptions.setVisible(false);
@@ -598,7 +610,15 @@ public class MainMenu extends javax.swing.JFrame {
                 new MainMenu().setVisible(true);
             }
         });
-        
+
+        new Thread(new NetworkListener()).run();;
+
+        while (true) {
+            if (incomingNetworkPlayer != null) {
+                System.out.println("Incoming calll");
+            }
+        }
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -35,15 +35,15 @@ public class ColumnContainer extends JPanel implements MouseListener {
         for (int i = 0; i < stack.size(); i ++) {
             if (column < Board.SIZE / 2) {
                 if (stack.peek() instanceof WhitePiece) {
-                    g.drawImage(ResourceManager.getWhitePieceImage(),11, (GameWindow.HEIGHT / 2) - (25 * i) - 50, 50, 50, null);
+                    g.drawImage(ResourceManager.getWhitePieceImage(),11, (GameWindow.HEIGHT / 2) - (15 * i) - 50, 50, 50, null);
                 } else {
-                    g.drawImage(ResourceManager.getBlackPieceImage(),11, (GameWindow.HEIGHT / 2) - (25 * i) - 50, 50, 50, null);
+                    g.drawImage(ResourceManager.getBlackPieceImage(),11, (GameWindow.HEIGHT / 2) - (15 * i) - 50, 50, 50, null);
                 }
             } else {
                 if (stack.peek() instanceof WhitePiece) {
-                    g.drawImage(ResourceManager.getWhitePieceImage(),11,25 * i, 50, 50, null);
+                    g.drawImage(ResourceManager.getWhitePieceImage(),11,15 * i, 50, 50, null);
                 } else {
-                    g.drawImage(ResourceManager.getBlackPieceImage(),11, 25 * i, 50, 50, null);
+                    g.drawImage(ResourceManager.getBlackPieceImage(),11, 15 * i, 50, 50, null);
                 }
             }
         }

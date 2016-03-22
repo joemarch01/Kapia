@@ -29,13 +29,16 @@ public class FinishZoneContainer extends JPanel implements MouseListener {
 
     public void paintComponent (Graphics g) {
         g.drawImage(ResourceManager.getBarImage(), 100, 0, -100, 250, null);
-        /*if (isWhite) {
-            g.setColor(Color.white);
-            g.fillRect(0,0,10000,10000);
+        Image pieceImage;
+        if (isWhite) {
+            pieceImage = ResourceManager.getWhitePieceImage();
         } else {
-            g.setColor(Color.black);
-            g.fillRect(0,0,10000,10000);
-        }*/
+            pieceImage = ResourceManager.getBlackPieceImage();
+        }
+
+        for (int i = 0; i < stackSize; i ++) {
+            g.drawImage(pieceImage, 25, i * 14, 50, 50, null);
+        }
     }
 
     @Override

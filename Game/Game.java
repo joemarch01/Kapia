@@ -257,7 +257,7 @@ public class Game implements Runnable {
             rollDice();
         }
 
-        exit();
+        //exit();
     }
 
     public void run () {

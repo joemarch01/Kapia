@@ -206,7 +206,10 @@ public class Board{
         int total = 0;
         if (clear.white()) {
 
+
             if (clear.getFrom() > 5 || clear.getFrom() < 0 || clear.getFrom() >= SIZE) {
+                return false;
+            } else if (board[clear.getFrom()].empty() || board[clear.getFrom()].peek() instanceof BlackPiece) {
                 return false;
             }
 
@@ -235,6 +238,8 @@ public class Board{
         } else {
 
             if (clear.getFrom() < SIZE - 6 || clear.getFrom() < 0 || clear.getFrom() >= SIZE) {
+                return false;
+            } else if (board[clear.getFrom()].empty() || board[clear.getFrom()].peek() instanceof WhitePiece) {
                 return false;
             }
 
