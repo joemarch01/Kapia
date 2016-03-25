@@ -611,7 +611,7 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
-        new Thread(new NetworkListener()).run();;
+        //new Thread(new NetworkListener()).run();;
 
         while (true) {
             if (incomingNetworkPlayer != null) {

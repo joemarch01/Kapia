@@ -477,6 +477,16 @@ public class Board{
         return true;
     }
 
+    public void updateEvent (Event event, Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
+        if (event instanceof Move) {
+            move(((Move)event), dice1, dice2, dice3, dice4);
+        }  else if (event instanceof Revive) {
+            revive(((Revive) event), dice1, dice2, dice3, dice4);
+        } else if (event instanceof Clear) {
+            clear(((Clear) event), dice1, dice2, dice3, dice4);
+        }
+    }
+
     public boolean isGameWon () {
         return (numberOfBlackPieces == 0) || (numberOfWhitePieces == 0);
     }

@@ -36,6 +36,7 @@ public class BoardPanel extends JLabel {
     public void paintComponent (Graphics g) {
         whiteFinishZone.setStackSize(15 - board.numberOfWhitePieces);
         blackFinishZone.setStackSize(15 - board.numberOfBlackPieces);
+
         g.drawImage(ResourceManager.getBoardImage(), 100, 0, GameWindow.WIDTH, GameWindow.HEIGHT, null);
     }
 

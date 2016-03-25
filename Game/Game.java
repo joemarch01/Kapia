@@ -156,6 +156,7 @@ public class Game implements Runnable {
         if (player2 instanceof NetworkPlayer) {
             if (player2.isWhite()) {
                 Player temp = player1;
+                player1.setWhite(false);
                 player1 = player2;
                 player2 = temp;
             } else {
@@ -273,6 +274,10 @@ public class Game implements Runnable {
         }
         window.dispose();
         System.out.println("Game finished");
+    }
+
+    public Player getCurrentPlayer () {
+        return currentPlayer;
     }
 
     public void setClearState () {

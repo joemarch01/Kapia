@@ -17,6 +17,8 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
 
         ArrayList<Event> legalMoves = generateLegalMoves(dice1, dice2, dice3, dice4);
 
+        orderByDisplacement(legalMoves);
+
         ArrayList<Event> captureMoves = ofWhichCapture(legalMoves);
 
         ArrayList<Event> kapiaMoves = ofWhichKapia(legalMoves);
@@ -29,7 +31,7 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
 
         setDice(dice1, dice2, dice3, dice4);
 
-        orderBySafety(legalMoves);
+
 
         if (captureMoves.size() != 0) {
             return captureMoves.get(0);
@@ -46,10 +48,34 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
 
         ArrayList<Event> result = new ArrayList<Event>();
 
-        Event move = bestMoveForDice(dice1, dice2, dice3, dice4);
+        ArrayList<ArrayList<Event>> moves = generateMoveTuples(dice1, dice2, dice3, dice4);
 
-        result.add(move);
+        if (moves.isEmpty()) {
+            result.add(new Skip());
+            return result;
+        }
 
-        return result;
+        int totalClears = rankByHighestClears(moves);
+        if (totalClears != 0) {
+            return  moves.get(0);
+        }
+
+        int totalCaptures = rankByHighestCaptures(moves);
+        if (totalCaptures != 0) {
+            return  moves.get(0);
+        }
+
+        int totalHomeZoneMoves = rankByHomeZoneMoves(moves);
+        if (totalHomeZoneMoves != 0) {
+            return moves.get(0);
+        }
+
+        int totalKapias = rankByHighestKapias(moves);
+        if (totalKapias != 0) {
+            return moves.get(0);
+        }
+
+        rankByAverageDisplacement(moves);
+        return moves.get(0);
     }
 }

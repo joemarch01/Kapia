@@ -25,11 +25,16 @@ public class BarContainer extends JPanel implements MouseListener {
 
     public void paintComponent (Graphics g) {
         g.drawImage(ResourceManager.getBarImage(), 0, 0, 100, 250, null);
+        g.drawImage(ResourceManager.getBarPitImage(), 10, 20, 80, 220, null);
         for (int i = 0; i < stack.size(); i ++) {
             if (stack.peek() instanceof WhitePiece) {
-                g.drawImage(ResourceManager.getWhitePieceImage(), 25, i*25 + 10, 50, 50, null);
+                g.drawImage(ResourceManager.getWhitePieceImage(), 34, i*8 + 45, 50, 50, null);
+                g.setColor(new Color(0, 0, 0, 0.1f));
+                g.fillOval(34, i * 8 + 45, 50, 50);
             } else {
-                g.drawImage(ResourceManager.getBlackPieceImage(), 25, i*25 + 10, 50, 50, null);
+                g.drawImage(ResourceManager.getBlackPieceImage(), 34, i*8 + 45, 50, 50, null);
+                g.setColor(new Color(0, 0, 0, 0.1f));
+                g.fillOval(34, i * 8 + 45, 50, 50);
             }
         }
     }

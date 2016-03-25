@@ -14,6 +14,7 @@ public class ResourceManager {
     private static BufferedImage barImage;
     private static BufferedImage dice[] = new BufferedImage[6];
     private static BufferedImage bottomImage;
+    private static BufferedImage barPitImage;
 
     public static void load () {
         try {
@@ -28,6 +29,7 @@ public class ResourceManager {
             dice[4] = ImageIO.read(new File("../Images/Dice5.png"));
             dice[5] = ImageIO.read(new File("../Images/Dice6.png"));
             bottomImage = ImageIO.read(new File("../Images/BottomPiece.png"));
+            barPitImage = ImageIO.read(new File("../Images/BarPit.png"));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -39,6 +41,10 @@ public class ResourceManager {
 
     public static BufferedImage getBarImage () {
         return barImage;
+    }
+
+    public static BufferedImage getBarPitImage () {
+        return barPitImage;
     }
 
     public static BufferedImage getWhitePieceImage () {

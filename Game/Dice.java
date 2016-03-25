@@ -31,4 +31,10 @@ public class Dice {
         this.value = value;
     }
 
+    public Dice clone () {
+        Dice clone = new Dice();
+        clone.setUsed(isUsed);
+        clone.setValue(value);
+        return clone;
+    }
 }

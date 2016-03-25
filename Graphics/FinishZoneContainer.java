@@ -15,7 +15,7 @@ public class FinishZoneContainer extends JPanel implements MouseListener {
         this.isWhite = isWhite;
         this.stackSize = 0;
         this.eventConstructor = eventConstructor;
-        if (isWhite) {
+        if (!isWhite) {
             setBounds(GameWindow.WIDTH + 100, 0, 100, GameWindow.HEIGHT/2);
         } else {
             setBounds(GameWindow.WIDTH + 100, GameWindow.HEIGHT / 2, 100, GameWindow.HEIGHT/2);
