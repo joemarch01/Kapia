@@ -3,17 +3,27 @@ package Player;
 import Board.*;
 import Event.*;
 import Game.Dice;
+import groovy.lang.Range;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Stack;
 
 public abstract class LocalAIPlayer extends Player {
     protected Dice dice1, dice2, dice3, dice4;
+    private float captureValue;
+    private float clearValue;
+    private float homeMoveValue;
+    private float displacementValue;
+    private float safetyValue;
 
     public LocalAIPlayer (String tag, boolean isWhite) {
         super(tag, isWhite);
+        captureValue = 4;
+        clearValue = 12;
+        homeMoveValue = 5;
+        displacementValue = 0.1f;
+        safetyValue = 0.001f;
+
     }
 
     public void setDice (Dice dice1, Dice dice2, Dice dice3, Dice dice4) {
@@ -353,7 +363,7 @@ public abstract class LocalAIPlayer extends Player {
 
         board = boardRef;
 
-        //Generate moves for dice 2 first
+        //Generate moves for dice 2 next
 
         ArrayList<Event> dice2Events = generateLegalMoves(dice2);
 
@@ -387,11 +397,58 @@ public abstract class LocalAIPlayer extends Player {
 
             }
             board = boardRef1;
+
         }
 
         board = boardRef;
 
+        dice1.setUsed(false);
         return result;
+    }
+
+    public int numberOfReflexiveCaptures (ArrayList<Event> tuple) {
+        int total = 0;
+        LocalAggressiveAIPlayer player2 = new LocalAggressiveAIPlayer(!isWhite);
+        Board board2 = board.clone();
+        Dice dice11 = dice1.clone();
+        Dice dice21 = dice2.clone();
+        Dice dice31 = dice3.clone();
+        Dice dice41 = dice4.clone();
+
+        player2.setBoard(board2);
+
+        for (Event event : tuple) {
+            board2.updateEvent(event, dice11, dice21, dice31, dice41);
+        }
+
+        for (int i = 1; i <= 6; i ++) {
+            for (int j = 1; j <= 6; j++) {
+                Dice dice12 = new Dice();
+                Dice dice22 = new Dice();
+                Dice dice32 = new Dice();
+                Dice dice42 = new Dice();
+
+                dice12.setValue(i);
+                dice12.setUsed(false);
+                dice22.setValue(j);
+                dice22.setUsed(false);
+
+                if (i == j) {
+                    dice32.setValue(i);
+                    dice32.setUsed(false);
+                    dice42.setValue(i);
+                    dice42.setUsed(false);
+                } else {
+                    dice32.setUsed(true);
+                    dice42.setUsed(true);
+                }
+
+                player2.setDice(dice12, dice22, dice32, dice42);
+                total += player2.rankByHighestCaptures(player2.generateMoveTuples(dice12, dice22, dice32, dice42));
+            }
+        }
+
+        return total;
     }
 
     public boolean isCaptureMove (Event event) {
@@ -430,6 +487,24 @@ public abstract class LocalAIPlayer extends Player {
             }
         }
         return false;
+    }
+
+    public float eventDisplacementMetric(Event event) {
+
+        if (event instanceof Move) {
+             if (((Move) event).getWhite()) {
+                 return (board.SIZE - ((Move) event).getTo()) * ((Move) event).getFrom();
+             } else {
+                 return ((Move) event).getTo() * (board.SIZE - ((Move) event).getFrom());
+             }
+        } else if (event instanceof Revive) {
+            if (((Revive) event).getWhite()) {
+                return (board.SIZE - ((Revive) event).getTo());
+            } else {
+                return ((Revive) event).getTo();
+            }
+        }
+        return 0;
     }
 
     public boolean isKapiaMove (Event event) {
@@ -716,6 +791,50 @@ public abstract class LocalAIPlayer extends Player {
         });
     }
 
+    public void rankByMetrics (ArrayList<ArrayList<Event>> list) {
+        HashMap<ArrayList<Event>, Float> rankings = new HashMap<>();
+
+        for (ArrayList<Event> tuple : list) {
+
+            float rank = 0;
+
+            for (Event event : tuple) {
+                if (isCaptureMove(event)) {
+                    rank += captureValue;
+                }
+
+                if (event instanceof Clear) {
+                    rank += clearValue;
+                }
+
+                if (doesMoveIntoHomeZone(event)) {
+                    rank += homeMoveValue;
+                }
+
+                float f = eventDisplacementMetric(event);
+                //rank += eventDisplacementMetric(event) * displacementValue;
+
+            }
+
+            if (safetyValue != 0) {
+                rank -= numberOfReflexiveCaptures(tuple) * safetyValue;
+            }
+
+            rankings.put(tuple, rank);
+        }
+
+        list.sort((ArrayList<Event> a, ArrayList<Event> b) -> {
+            if (rankings.get(a) > rankings.get(b)) {
+                return -1;
+            } else if (rankings.get(a) < rankings.get(b)) {
+                return 1;
+            }
+            return 0;
+        });
+
+        return;
+    }
+
     public Event containsEventType (ArrayList<Event> list, Class type) {
         for (Event e: list) {
             if (e.getClass() == type) {
@@ -725,4 +844,42 @@ public abstract class LocalAIPlayer extends Player {
         return null;
     }
 
+    public float averageDistributionOfPieces () {
+        float total = 0;
+        float n = 0;
+
+        for (int i = 0; i < board.SIZE; i ++) {
+            if (!board.getColumn(i).empty()) {
+                if (isWhite && board.getColumn(i).peek() instanceof WhitePiece) {
+                    total += (board.SIZE - 1 - i) * board.getColumn(i).size();
+                    n += board.getColumn(i).size();
+                } else if (!isWhite && board.getColumn(i).peek() instanceof BlackPiece) {
+                    total += i * board.getColumn(i).size();
+                    n += board.getColumn(i).size();
+                }
+            }
+        }
+
+        return total / n;
+    }
+
+    public void setCaptureValue(float captureValue) {
+        this.captureValue = captureValue;
+    }
+
+    public void setClearValue(float clearValue) {
+        this.clearValue = clearValue;
+    }
+
+    public void setHomeMoveValue(float homeMoveValue) {
+        this.homeMoveValue = homeMoveValue;
+    }
+
+    public void setDisplacementValue(float displacementValue) {
+        this.displacementValue = displacementValue;
+    }
+
+    public void setSafetyValue(float safetyValue) {
+        this.safetyValue = safetyValue;
+    }
 }

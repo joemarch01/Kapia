@@ -55,7 +55,7 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
             return result;
         }
 
-        int totalClears = rankByHighestClears(moves);
+/*        int totalClears = rankByHighestClears(moves);
         if (totalClears != 0) {
             return  moves.get(0);
         }
@@ -75,7 +75,35 @@ public class LocalAggressiveAIPlayer extends LocalAIPlayer {
             return moves.get(0);
         }
 
-        rankByAverageDisplacement(moves);
+        rankByAverageDisplacement(moves);*/
+
+        setCaptureValue(4);
+        setClearValue(200);
+        setDisplacementValue(0.25f);
+        setHomeMoveValue(8);
+
+        float dist = averageDistributionOfPieces();
+
+        if (dist < 8) {
+            setDisplacementValue(0.4f);
+        } else if (dist > 8 && dist < 16) {
+            setCaptureValue(8);
+            setHomeMoveValue(4);
+        } else {
+            setCaptureValue(4);
+            setHomeMoveValue(10);
+            setDisplacementValue(0.2f);
+            setSafetyValue(0.001f);
+        }
+
+        if (isBoardSafe()) {
+            setSafetyValue(0);
+        } else {
+            setSafetyValue(0.005f);
+            setHomeMoveValue(4);
+        }
+
+        rankByMetrics(moves);
         return moves.get(0);
     }
 }
